@@ -5,6 +5,7 @@ namespace araniyor.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
+    using System.Web;
 
     public partial class Users
     {
@@ -13,8 +14,7 @@ namespace araniyor.Models
         {
             blocked = new HashSet<blocked>();
             blocked1 = new HashSet<blocked>();
-            messages = new HashSet<messages>();
-            messages1 = new HashSet<messages>();
+
         }
 
         [Key]
@@ -34,6 +34,7 @@ namespace araniyor.Models
 
         [Required]
         [StringLength(50)]
+        [EmailAddress(ErrorMessage = "Geçersiz E-Posta Adresi.!")]
         public string eMail { get; set; }
 
         [Required]
@@ -45,6 +46,7 @@ namespace araniyor.Models
         public string surname { get; set; }
 
         public bool steward { get; set; }
+
 
         [Column(TypeName = "image")]
         public byte[] picture { get; set; }
@@ -92,10 +94,10 @@ namespace araniyor.Models
 
         public virtual businessSubategory businessSubategory { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<messages> messages { get; set; }
+        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        //public virtual ICollection<messages> messages { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<messages> messages1 { get; set; }
+        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        //public virtual ICollection<messages> messages1 { get; set; }
     }
 }

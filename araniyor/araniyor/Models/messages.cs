@@ -20,11 +20,6 @@ namespace araniyor.Models
 
         public DateTime date { get; set; }
 
-        [Required]
         public string conversationID { get; set; }
-
-        public virtual Users Users { get; set; }
-
-        public virtual Users Users1 { get; set; }
     }
 }

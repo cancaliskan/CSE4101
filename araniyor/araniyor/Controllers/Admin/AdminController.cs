@@ -2,6 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Drawing;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -435,28 +438,697 @@ namespace araniyor.Controllers.Admin
             return View(db.Users.ToList());
         }
 
+        [HttpPost]
+        public JsonResult GetirKategori(string kategoriId)
+        {
+            Araniyor entities = new Araniyor();
+
+            int kategoriID = Convert.ToInt32(kategoriId);
+
+            var altKategoriler = entities.businessSubategory.Where(x => x.businessCategoryID == kategoriID).Select(a => new { Id = a.businessSubategoryID, Ad = a.businessSubategory1 }).ToList();
+            return Json(altKategoriler);
+        }
+
+        [HttpPost]
+        public JsonResult GetirIlceler(string ilId)
+        {
+            Araniyor entities = new Araniyor();
+            int ilID = 0;
+            if (!string.IsNullOrEmpty(ilId))
+                ilID = Convert.ToInt32(ilId);
+
+            var ilceler = entities.District.Where(ilce => ilce.CityID == ilID).Select(ilce => new { Id = ilce.ID, Ad = ilce.District1 }).ToList();
+            return Json(ilceler);
+        }
+
         [ControlLogin]
         public ActionResult CreateUser()
         {
-            ViewBag.businessCategoryID = new SelectList(db.businessCategory, "businessCategoryID", "businessCategory1");
-            ViewBag.businessSubategoryID = new SelectList(db.businessSubategory, "businessSubategoryID", "businessSubategory1");
+            Users user = new Users();
+            user.active = true;
+            ViewBag.Kategori = db.businessCategory.ToList();
+            ViewBag.Sehir = db.City.ToList();
+            return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateUser([Bind(Include = "userID,businessCategoryID,businessSubategoryID,username,password,eMail,name,surname,steward,country,city,district,birthday,phone,description,votingNumber,totalScore,score,numberOfComments,numberOfViews,active,gender,experience")] Users users, HttpPostedFileBase fileup)
+        {
+            var usernameVarmi = db.Users.Where(a => a.username == users.username).FirstOrDefault();
+            if (usernameVarmi != null)
+                TempData["mesaj"] = "Kullanıcı adı sisemde mevcut.!";
+            else
+            {
+                if (users.businessCategoryID == 0 || users.businessSubategoryID == 0)
+                    TempData["mesaj"] = "Kategori veya alt kategori boş geçilemez.!";
+                else
+                {
+                    if (fileup != null)
+                    {
+                        users.picture = new byte[fileup.ContentLength];
+                        fileup.InputStream.Read(users.picture, 0, fileup.ContentLength);
+
+                    }
+                    else
+                    {
+                       //** buraya default image eklenecek
+                    }
+                    if (users.steward == true)
+                    {
+                        if ((users.city != null && users.district != null
+                        && users.birthday != null && users.description != null && users.gender != null && users.experience != null))
+                        {
+                            if (ModelState.IsValid)
+                            {
+                                db.Users.Add(users);
+                                db.SaveChanges();
+                                return RedirectToAction("ListUser");
+                            }
+                        }
+                        else
+                            TempData["mesaj"] = "Lütfen tüm alanları doldurunuz.!";
+                    }
+                    else
+                    {
+                        if (fileup != null)
+                        {
+                            users.picture = new byte[fileup.ContentLength];
+                            fileup.InputStream.Read(users.picture, 0, fileup.ContentLength);
+
+                        }
+                        else
+                        {
+                            //** buraya default image eklenecek
+                        }
+                        if (ModelState.IsValid)
+                        {
+                            db.Users.Add(users);
+                            db.SaveChanges();
+                            return RedirectToAction("ListUser");
+                        }
+                    }
+                }
+            }
+            Users user = new Users();
+            user.active = true;
+            ViewBag.Kategori = db.businessCategory.ToList();
+            ViewBag.Sehir = db.City.ToList();
+            ViewBag.businessCategoryID = new SelectList(db.businessCategory, "businessCategoryID", "businessCategory1", users.businessCategoryID);
+            ViewBag.businessSubategoryID = new SelectList(db.businessSubategory, "businessSubategoryID", "businessSubategory1", users.businessSubategoryID);
+            return View(users);
+        }
+
+        [ControlLogin]
+        public ActionResult DetailsUser(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Users users = db.Users.Find(id);
+            if (users == null)
+            {
+                return HttpNotFound();
+            }
+            return View(users);
+        }
+
+        [ControlLogin]
+        public ActionResult EditUser(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Users users = db.Users.Find(id);
+            if (users == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Kategori = db.businessCategory.ToList();
+            ViewBag.Sehir = db.City.ToList();
+
+            //ViewBag.businessCategoryID = new SelectList(db.businessCategory, "businessCategoryID", "businessCategory1", users.businessCategoryID);
+            //ViewBag.businessSubategoryID = new SelectList(db.businessSubategory, "businessSubategoryID", "businessSubategory1", users.businessSubategoryID);
+            return View(users);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditUser([Bind(Include = "userID,businessCategoryID,businessSubategoryID,username,password,eMail,name,surname,steward,picture,country,city,district,birthday,phone,description,votingNumber,totalScore,score,numberOfComments,numberOfViews,active,gender,experience")] Users users, HttpPostedFileBase fileup)
+        {
+            //var tempUser = db.Users.Where(x => x.username == users.username).FirstOrDefault();
+            //if ((tempUser != null && tempUser.userID != users.userID))
+            //    TempData["mesaj"] = "Kullanıcı adı sistemde mevcut.!";
+            //else
+            //{
+            if (users.businessCategoryID == 0 || users.businessSubategoryID == 0)
+                TempData["mesaj"] = "Kategori veya alt kategori boş geçilemez.!";
+            else
+            {
+                if (users.steward == true)
+                {
+                    if ((users.picture != null && users.city != null && users.district != null
+                    && users.birthday != null && users.description != null && users.gender != null && users.experience != null))
+                    {
+                        if (fileup != null)
+                        {
+                            users.picture = new byte[fileup.ContentLength];
+                            fileup.InputStream.Read(users.picture, 0, fileup.ContentLength);
+
+                        }
+                        if (ModelState.IsValid)
+                        {
+                            if (fileup != null)
+                            {
+                                users.picture = new byte[fileup.ContentLength];
+                                fileup.InputStream.Read(users.picture, 0, fileup.ContentLength);
+                            }
+                            db.Entry(users).State = EntityState.Modified;
+                            db.SaveChanges();
+
+                            return RedirectToAction("ListUser");
+                        }
+                    }
+                    else
+                        TempData["mesaj"] = "Lütfen tüm alanları doldurunuz.!";
+                }
+                else
+                {
+                    if (fileup != null)
+                    {
+                        users.picture = new byte[fileup.ContentLength];
+                        fileup.InputStream.Read(users.picture, 0, fileup.ContentLength);
+
+                    }
+                    if (ModelState.IsValid)
+                    {
+                        if (fileup != null)
+                        {
+                            users.picture = new byte[fileup.ContentLength];
+                            fileup.InputStream.Read(users.picture, 0, fileup.ContentLength);
+                        }
+                        db.Entry(users).State = EntityState.Modified;
+                        db.SaveChanges();
+
+                        return RedirectToAction("ListUser");
+                    }
+                }
+            }
+            //}
+            ViewBag.Kategori = db.businessCategory.ToList();
+            ViewBag.Sehir = db.City.ToList();
+
+            //ViewBag.businessCategoryID = new SelectList(db.businessCategory, "businessCategoryID", "businessCategory1", users.businessCategoryID);
+            //ViewBag.businessSubategoryID = new SelectList(db.businessSubategory, "businessSubategoryID", "businessSubategory1", users.businessSubategoryID);
+            return View(users);
+        }
+
+        [ControlLogin]
+        public ActionResult DeleteUser(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Users users = db.Users.Find(id);
+            if (users == null)
+            {
+                return HttpNotFound();
+            }
+            return View(users);
+        }
+
+        // POST: Users/Delete/5
+        [HttpPost, ActionName("DeleteUser")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmedUser(int id)
+        {
+            Users users = db.Users.Find(id);
+            db.Users.Remove(users);
+            db.SaveChanges();
+            return RedirectToAction("ListUser");
+        }
+
+        [ControlLogin]
+        public ActionResult ListYorum()
+        {
+            return View(db.Yorumlar.ToList());
+        }
+
+        [ControlLogin]
+        public ActionResult CreateYorum()
+        {
+            ViewBag.Users = new SelectList(db.Users, "userID", "username");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateUser([Bind(Include = "userID,businessCategoryID,businessSubategoryID,username,password,eMail,name,surname,steward,picture,country,city,district,birthday,phone,description,votingNumber,totalScore,score,numberOfComments,numberOfViews,active,gender,experience")] Users users)
+        public ActionResult CreateYorum([Bind(Include = "ID,yorumYapan,yorumYapilan,yorumMetni,yorumTarihi")] Yorumlar yorumlar)
+        {
+            if (yorumlar.yorumYapan == yorumlar.yorumYapilan)
+            {
+                TempData["mesaj"] = "Kişi kendine yorum yapamaz.!";
+            }
+            else
+            {
+                if (ModelState.IsValid)
+                {
+                    db.Yorumlar.Add(yorumlar);
+                    db.SaveChanges();
+                    var user = db.Users.Find(yorumlar.yorumYapilan);
+                    if (user.numberOfComments == 0 || user.numberOfComments == null)
+                        user.numberOfComments = 1;
+                    else
+                        user.numberOfComments += 1;
+                    db.Entry(user).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("ListYorum");
+                }
+            }
+            ViewBag.Users = new SelectList(db.Users, "userID", "username");
+            return View(yorumlar);
+        }
+
+        [ControlLogin]
+        public ActionResult DetailsYorum(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Yorumlar yorumlar = db.Yorumlar.Find(id);
+            if (yorumlar == null)
+            {
+                return HttpNotFound();
+            }
+            return View(yorumlar);
+        }
+
+        [ControlLogin]
+        public ActionResult EditYorum(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Yorumlar yorumlar = db.Yorumlar.Find(id);
+            if (yorumlar == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Users = new SelectList(db.Users, "userID", "username");
+            return View(yorumlar);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditYorum([Bind(Include = "ID,yorumYapan,yorumYapilan,yorumMetni,yorumTarihi")] Yorumlar yorumlar)
+        {
+            if (yorumlar.yorumYapan == yorumlar.yorumYapilan)
+            {
+                TempData["mesaj"] = "Kişi kendine yorum yapamaz.!";
+            }
+            else
+            {
+                if (ModelState.IsValid)
+                {
+                    db.Entry(yorumlar).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("ListYorum");
+                }
+            }
+            ViewBag.Users = new SelectList(db.Users, "userID", "username");
+            return View(yorumlar);
+        }
+
+        [ControlLogin]
+        public ActionResult DeleteYorum(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Yorumlar yorumlar = db.Yorumlar.Find(id);
+            if (yorumlar == null)
+            {
+                return HttpNotFound();
+            }
+            return View(yorumlar);
+        }
+
+        [HttpPost, ActionName("DeleteYorum")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmedYorum(int id)
+        {
+            Yorumlar yorumlar = db.Yorumlar.Find(id);
+            db.Yorumlar.Remove(yorumlar);
+            db.SaveChanges();
+            return RedirectToAction("ListYorum");
+        }
+
+        [ControlLogin]
+        public ActionResult ListMesaj()
+        {
+            return View(db.messages.ToList());
+        }
+
+        [ControlLogin]
+        public ActionResult DetailsMesaj(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            messages messages = db.messages.Find(id);
+            if (messages == null)
+            {
+                return HttpNotFound();
+            }
+            return View(messages);
+        }
+
+        [ControlLogin]
+        public ActionResult CreateMesaj()
+        {
+            ViewBag.Users = new SelectList(db.Users, "userID", "username");
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateMesaj([Bind(Include = "messageID,senderID,receiverID,message,date,conversationID")] messages messages)
+        {
+            if (messages.senderID == messages.receiverID)
+            {
+                TempData["mesaj"] = "Kişi kendine mesaj atamaz.!";
+            }
+            else
+            {
+                messages.conversationID = Convert.ToString(messages.senderID) + Convert.ToString(messages.receiverID);
+                if (ModelState.IsValid)
+                {
+                    db.messages.Add(messages);
+                    db.SaveChanges();
+                    return RedirectToAction("ListMesaj");
+                }
+            }
+            ViewBag.Users = new SelectList(db.Users, "userID", "username");
+            return View(messages);
+        }
+
+        [ControlLogin]
+        public ActionResult EditMesaj(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            messages messages = db.messages.Find(id);
+            if (messages == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Users = new SelectList(db.Users, "userID", "username");
+            return View(messages);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditMesaj([Bind(Include = "messageID,senderID,receiverID,message,date,conversationID")] messages messages)
+        {
+            if (messages.senderID == messages.receiverID)
+            {
+                TempData["mesaj"] = "Kişi kendine mesaj atamaz.!";
+            }
+            else
+            {
+                if (ModelState.IsValid)
+                {
+                    db.Entry(messages).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("ListMesaj");
+                }
+            }
+            ViewBag.Users = new SelectList(db.Users, "userID", "username");
+            return View(messages);
+        }
+
+        [ControlLogin]
+        public ActionResult DeleteMesaj(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            messages messages = db.messages.Find(id);
+            if (messages == null)
+            {
+                return HttpNotFound();
+            }
+            return View(messages);
+        }
+
+        // POST: messages/Delete/5
+        [HttpPost, ActionName("DeleteMesaj")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmedMesaj(int id)
+        {
+            messages messages = db.messages.Find(id);
+            db.messages.Remove(messages);
+            db.SaveChanges();
+            return RedirectToAction("ListMesaj");
+        }
+
+        [ControlLogin]
+        public ActionResult ListPuan()
+        {
+            return View(db.Puanlar.ToList());
+        }
+
+        [ControlLogin]
+        public ActionResult DetailsPuan(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Puanlar puanlar = db.Puanlar.Find(id);
+            if (puanlar == null)
+            {
+                return HttpNotFound();
+            }
+            return View(puanlar);
+        }
+
+
+        [ControlLogin]
+        public ActionResult CreatePuan()
+        {
+            ViewBag.Users = new SelectList(db.Users, "userID", "username");
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreatePuan([Bind(Include = "ID,puanVeren,puanVerilen,Tarih,Puan")] Puanlar puanlar)
+        {
+            if (puanlar.puanVeren == puanlar.puanVerilen)
+            {
+                TempData["mesaj"] = "Kişi kendine puan veremez.!";
+            }
+            else
+            {
+                if (ModelState.IsValid)
+                {
+                    db.Puanlar.Add(puanlar);
+                    db.SaveChanges();
+                    var user = db.Users.Find(puanlar.puanVerilen);
+                    var toplamPuanSayisiList = db.Puanlar.Where(a => a.puanVerilen == puanlar.puanVerilen).ToList();
+                    int totalScore = 0;
+                    for (int i = 0; i < toplamPuanSayisiList.Count; i++)
+                    {
+                        totalScore += toplamPuanSayisiList[i].Puan;
+                    }
+                    user.score = (Convert.ToDouble(totalScore) / Convert.ToDouble(toplamPuanSayisiList.Count));
+                    db.Entry(user).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("ListPuan");
+                }
+            }
+            ViewBag.Users = new SelectList(db.Users, "userID", "username");
+            return View(puanlar);
+        }
+
+        [ControlLogin]
+        public ActionResult EditPuan(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Puanlar puanlar = db.Puanlar.Find(id);
+            if (puanlar == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Users = new SelectList(db.Users, "userID", "username");
+            return View(puanlar);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditPuan([Bind(Include = "ID,puanVeren,puanVerilen,Tarih,Puan")] Puanlar puanlar)
         {
             if (ModelState.IsValid)
             {
-                db.Users.Add(users);
+                db.Entry(puanlar).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                var user = db.Users.Find(puanlar.puanVerilen);
+                var toplamPuanSayisiList = db.Puanlar.Where(a => a.puanVerilen == puanlar.puanVerilen).ToList();
+                int totalScore = 0;
+                for (int i = 0; i < toplamPuanSayisiList.Count; i++)
+                {
+                    totalScore += toplamPuanSayisiList[i].Puan;
+                }
+                user.score = (Convert.ToDouble(totalScore) / Convert.ToDouble(toplamPuanSayisiList.Count));
+                db.Entry(user).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("ListPuan");
             }
+            ViewBag.Users = new SelectList(db.Users, "userID", "username");
+            return View(puanlar);
+        }
 
-            ViewBag.businessCategoryID = new SelectList(db.businessCategory, "businessCategoryID", "businessCategory1", users.businessCategoryID);
-            ViewBag.businessSubategoryID = new SelectList(db.businessSubategory, "businessSubategoryID", "businessSubategory1", users.businessSubategoryID);
-            return View(users);
+        [ControlLogin]
+        public ActionResult DeletePuan(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Puanlar puanlar = db.Puanlar.Find(id);
+            if (puanlar == null)
+            {
+                return HttpNotFound();
+            }
+            return View(puanlar);
+        }
+
+        // POST: Puanlars/Delete/5
+        [HttpPost, ActionName("DeletePuan")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmedPuan(int id)
+        {
+            Puanlar puanlar = db.Puanlar.Find(id);
+            db.Puanlar.Remove(puanlar);
+            db.SaveChanges();
+            var user = db.Users.Find(puanlar.puanVerilen);
+            var toplamPuanSayisiList = db.Puanlar.Where(a => a.puanVerilen == puanlar.puanVerilen).ToList();
+            int totalScore = 0;
+            if (toplamPuanSayisiList.Count != 0)
+            {
+                for (int i = 0; i < toplamPuanSayisiList.Count; i++)
+                {
+                    totalScore += toplamPuanSayisiList[i].Puan;
+                }
+                user.score = (Convert.ToDouble(totalScore) / Convert.ToDouble(toplamPuanSayisiList.Count));
+            }
+            else
+            {
+                user.score = 0;
+            }
+            db.Entry(user).State = EntityState.Modified;
+            db.SaveChanges();
+            return RedirectToAction("ListPuan");
+        }
+
+        [ControlLogin]
+        public ActionResult ListProfilGoruntuleme()
+        {
+            return View(db.ProfilGoruntuleme.ToList());
+        }
+
+        [ControlLogin]
+        public ActionResult DetailsProfilGoruntuleme(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ProfilGoruntuleme profilGoruntuleme = db.ProfilGoruntuleme.Find(id);
+            if (profilGoruntuleme == null)
+            {
+                return HttpNotFound();
+            }
+            return View(profilGoruntuleme);
+        }
+
+        [ControlLogin]
+        public ActionResult CreateProfilGoruntuleme()
+        {
+            ViewBag.Users = new SelectList(db.Users, "userID", "username");
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateProfilGoruntuleme([Bind(Include = "ID,goruntuleyen,goruntulenen,Tarih")] ProfilGoruntuleme profilGoruntuleme)
+        {
+            if (profilGoruntuleme.goruntulenen == profilGoruntuleme.goruntuleyen)
+            {
+                TempData["mesaj"] = "Kendi profil resmini görüntülemesi geçersizdir.!";
+            }
+            else
+            {
+                if (ModelState.IsValid)
+                {
+                    profilGoruntuleme.Tarih = DateTime.Now;
+                    db.ProfilGoruntuleme.Add(profilGoruntuleme);
+                    db.SaveChanges();
+                    var user = db.Users.Find(profilGoruntuleme.goruntulenen);
+
+                    if (user.numberOfViews == 0 || user.numberOfViews == null)
+                        user.numberOfViews = 1;
+                    else
+                        user.numberOfViews += 1;
+
+                    db.Entry(user).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("ListProfilGoruntuleme");
+                }
+            }
+            ViewBag.Users = new SelectList(db.Users, "userID", "username");
+            return View(profilGoruntuleme);
+        }
+
+        [ControlLogin]
+        public ActionResult DeleteProfilGoruntuleme(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ProfilGoruntuleme profilGoruntuleme = db.ProfilGoruntuleme.Find(id);
+            if (profilGoruntuleme == null)
+            {
+                return HttpNotFound();
+            }
+            return View(profilGoruntuleme);
+        }
+
+        // POST: ProfilGoruntulemes/Delete/5
+        [HttpPost, ActionName("DeleteProfilGoruntuleme")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmedProfilGoruntuleme(int id)
+        {
+            ProfilGoruntuleme profilGoruntuleme = db.ProfilGoruntuleme.Find(id);
+            db.ProfilGoruntuleme.Remove(profilGoruntuleme);
+            db.SaveChanges();
+            return RedirectToAction("ListProfilGoruntuleme");
         }
 
         protected override void Dispose(bool disposing)

@@ -212,7 +212,6 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\Admin\AdminController.cs" />
-    <Compile Include="Controllers\Admin\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -220,9 +219,14 @@
     <Compile Include="Models\blocked.cs" />
     <Compile Include="Models\businessCategory.cs" />
     <Compile Include="Models\businessSubategory.cs" />
+    <Compile Include="Models\City.cs" />
     <Compile Include="Models\ControlLogin.cs" />
+    <Compile Include="Models\District.cs" />
     <Compile Include="Models\messages.cs" />
+    <Compile Include="Models\ProfilGoruntuleme.cs" />
+    <Compile Include="Models\Puanlar.cs" />
     <Compile Include="Models\Users.cs" />
+    <Compile Include="Models\Yorumlar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -256,6 +260,28 @@
     <Content Include="Views\Admin\DeleteBlocked.cshtml" />
     <Content Include="Views\Admin\CreateUser.cshtml" />
     <Content Include="Views\Admin\ListUser.cshtml" />
+    <Content Include="Views\Admin\DetailsUser.cshtml" />
+    <Content Include="Views\Admin\EditUser.cshtml" />
+    <Content Include="Views\Admin\DeleteUser.cshtml" />
+    <Content Include="Views\Admin\ListYorum.cshtml" />
+    <Content Include="Views\Admin\CreateYorum.cshtml" />
+    <Content Include="Views\Admin\DetailsYorum.cshtml" />
+    <Content Include="Views\Admin\EditYorum.cshtml" />
+    <Content Include="Views\Admin\DeleteYorum.cshtml" />
+    <Content Include="Views\Admin\ListMesaj.cshtml" />
+    <Content Include="Views\Admin\CreateMesaj.cshtml" />
+    <Content Include="Views\Admin\DetailsMesaj.cshtml" />
+    <Content Include="Views\Admin\EditMesaj.cshtml" />
+    <Content Include="Views\Admin\DeleteMesaj.cshtml" />
+    <Content Include="Views\Admin\ListPuan.cshtml" />
+    <Content Include="Views\Admin\DetailsPuan.cshtml" />
+    <Content Include="Views\Admin\CreatePuan.cshtml" />
+    <Content Include="Views\Admin\EditPuan.cshtml" />
+    <Content Include="Views\Admin\DeletePuan.cshtml" />
+    <Content Include="Views\Admin\ListProfilGoruntuleme.cshtml" />
+    <Content Include="Views\Admin\DetailsProfilGoruntuleme.cshtml" />
+    <Content Include="Views\Admin\CreateProfilGoruntuleme.cshtml" />
+    <Content Include="Views\Admin\DeleteProfilGoruntuleme.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -265,6 +291,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\ProfilGoruntulemes\" />
+    <Folder Include="Views\Puanlars\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="scripts\index.d.ts" />
