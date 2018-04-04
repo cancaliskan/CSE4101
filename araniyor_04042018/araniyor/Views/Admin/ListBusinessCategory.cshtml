@@ -1,0 +1,40 @@
+﻿@model IEnumerable<araniyor.Models.businessCategory>
+
+@{
+    ViewBag.Title = "ListBusinessCategory";
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+}
+
+<h2>Kategori Listesi</h2>
+<hr />
+<p>
+    @Html.ActionLink("Kategori Oluştur", "CreateBusinessCategory", null, new { @class = "btn btn-primary btn" })
+</p>
+<div class="panel panel-primary filterable" style="overflow-x: auto;">
+
+    <table class="table table-bordered table-striped">
+        <div class="panel-heading">
+            <thead>
+                <tr class="filters">
+                    <th style="width:50%"><input type="text" class="form-control" placeholder="Kategori İsmi"></th>
+                    <th style="width:50%"></th>
+                </tr>
+            </thead>
+        </div>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.businessCategory1)
+                </td>
+                <td style="text-align:center">
+                    @Html.ActionLink("Düzenle", "EditBusinessCategory", new { id = item.businessCategoryID }, new { @class = "btn btn-warning btn-sm" })
+                    @Html.ActionLink("Detay", "DetailsBusinessCategory", new { id = item.businessCategoryID }, new { @class = "btn btn-primary btn-sm" })
+                    @Html.ActionLink("Sil", "DeleteBusinessCategory", new { id = item.businessCategoryID }, new { @class = "btn btn-danger btn-sm" })
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

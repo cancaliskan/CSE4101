@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Kategoriler";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+
+<link href="~/Content/SBAdmin/css/Kategoriler.css" rel="stylesheet" />
+
+
+    <div class="container mt-5 mb-5">
+        <h2>Kategoriler</h2>
+        <hr />
+        <div id="ContentPlaceHolder1_pnlOtherGroups">
+            @foreach (var item in ViewBag.Kategori)
+            {
+                <div class="container">
+                    <div class="all-services">
+                        <h2>@item.businessCategory1</h2><div class="all-services-list">
+                            @foreach (var AltKategori in ViewBag.AltKategori)
+                            {
+                                if (AltKategori.businessCategoryID == item.businessCategoryID)
+                                {
+                                    <a class="service-name" href="@Url.Action("ListUser", "Home", new { altKategoriID = AltKategori.businessSubategoryID }, null)">@AltKategori.businessSubategory1</a>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
