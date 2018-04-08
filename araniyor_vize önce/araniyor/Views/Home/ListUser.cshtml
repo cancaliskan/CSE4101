@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewBag.Title = "ListUser";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<style>
+    .card-title a {
+        color: rgba(44, 62, 80, 1.0);
+    }
+
+        .card-title a:hover {
+            color: rgba(52, 73, 94,1.0);
+        }
+
+    .search-row-wrapper {
+        background-size: contain;
+        background-repeat: no-repeat;
+        height: 250px;
+        padding: 50px 0;
+        transition: all 400ms cubic-bezier(0.25,0.1,0.25,1) 0s;
+        -webkit-transition: all 400ms cubic-bezier(0.25,0.1,0.25,1) 0s;
+        width: 100%;
+        background-position: center;
+    }
+</style>
+
+<div class="container pt-5 pb-5 mt-5 mb-5">
+    <div class="row ">
+
+        <div class="col-md-3">
+            <ul class="list-group">
+                <li class="list-group-item active">filtrelenecek</li>
+                <li class="list-group-item">filtrelenecek</li>
+                <li class="list-group-item">filtrelenecek</li>
+                <li class="list-group-item">filtrelenecek</li>
+                <li class="list-group-item">filtrelenecek</li>
+            </ul>
+        </div>
+
+        <div class="col-md-9">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="dropdown ml-3 ">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Sıralama Seçiniz
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">Puana Göre Azalan</a>
+                            <a class="dropdown-item" href="#">Puana Göre Artan</a>
+                            <a class="dropdown-item" href="#">Deneyime Göre Azalan</a>
+                            <a class="dropdown-item" href="#">Deneyime Göre Azalan</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="ajax-main">
+                    @Html.Partial("_UserList", null)
+                    @*@{ RenderPartialExtensions.RenderPartial(Html, "_UserList", ViewBag.userList1); }*@
+                </div>
+                <div class="row">
+                    <div id="load" style="display:none;">
+                        <b>Kayıtlar Yükleniyor...</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var pageNo = 1;
+
+    $(window).scroll(function () {
+
+        var pageNo = 1;
+        var isPageLoad =true;
+
+        if ($(window).scrollTop() == $(document).height() - $(window).height()-1) {
+            if(isPageLoad)
+            {
+                $("#load").show();
+                $.ajax({
+                    url: '/Home/ListUser',
+                    data: {altKategoriID: @ViewBag.altKategoriID, page: pageNo},
+                    success: function(data){
+                        $("#ajax-main").append(data);
+                        pageNo++;
+                        $("#load").hide();
+                        if ($.trim(data == '')) {
+                            isPageLoad =false;
+                        }
+                    }
+                });
+            }
+
+
+        }
+    });
+</script>
