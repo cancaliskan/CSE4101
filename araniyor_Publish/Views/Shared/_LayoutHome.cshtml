@@ -1,0 +1,492 @@
+﻿@model araniyor.Models.AboutUs
+
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link href="~/Content/SBAdmin/css/sticky-footer-navbar.css" rel="stylesheet" />
+    <link href="~/Content/SBAdmin/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+
+    <script src="//netdna.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+ 
+    @*<script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet" />*@
+    @*<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>*@ 
+
+    <title>- Araniyor.ml -</title>
+
+    <style>
+        a {
+            color: white;
+            font-size: 18px;
+        }
+
+            a:hover {
+                color: #17a2b8;
+            }
+
+        footer {
+            background-color: rgba(44, 62, 80, 1.0);
+            width: 100%;
+            bottom: 0;
+            font-weight: lighter;
+            color: white;
+        }
+
+        .footerHeader {
+            width: 100%;
+            padding: 1em;
+            background-color: rgba(52, 73, 94,1.0);
+            text-align: center;
+            color: white;
+        }
+
+        footer h3 {
+            font-weight: lighter;
+        }
+
+        footer ul {
+            padding-left: 5px;
+            list-style: none;
+        }
+
+        footer p {
+            text-align: justify;
+            font-size: 12px;
+        }
+
+        footer iframe {
+            width: 100%;
+            position: relative;
+            height: 170px;
+        }
+
+        .sm {
+            list-style: none;
+            overflow: auto;
+        }
+
+            .sm li {
+                display: inline;
+                padding: 5px;
+                float: left;
+            }
+
+                .sm li a img {
+                    width: 32px;
+                }
+    </style>
+
+    <style type="text/css">
+        .show-on-hover:hover > ul.dropdown-menu {
+            display: block;
+        }
+    </style>
+
+</head>
+<body>
+    <div>
+        <!-- Nav Bar Start rgba(52, 73, 94,1.0)-->
+        <nav class="navbar fixed-top navbar-expand-lg navbar-ligth" style="background-color:rgba(52, 73, 94,1.0); opacity:0.85">
+            <div class="container">
+                <a class="navbar-brand" href="~/Home/Index">
+                    <img src="~/images/search-people-white.png" width="50px" class="img-fluid rounded" />
+                </a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-bars" style="color:white;"></i>
+                    <span class="navbar-toggler-icon">
+                    </span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarColor01">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="~/Home/Index">
+                                <i class="fas fa-home"></i>
+                                Anasayfa <span class="sr-only">(current)</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Kategoriler">
+                                Kategoriler
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Hakkimizda">
+                                Hakkımızda
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Misyon">
+                                Misyonumuz
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Vizyon">
+                                Vizyonumuz
+                            </a>
+                        </li>
+                    </ul>
+                    <form class="form-inline">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Aranacak Kategori" aria-label="Search" name="searchInput" id="searchInput">
+                        <button class="btn btn-outline-info my-2 mr-sm-4" id="altKategoriAraBtn">Ara</button>
+                        @if (Session["userID"] == null)
+                        {
+                            <button type="button" class="btn btn-outline-info my-2 mr-sm-2" data-toggle="modal" data-target="#uyeOl">Üye Ol</button>
+                            <button type="button" class="btn btn-outline-info my-2 mr-sm-2" data-toggle="modal" data-target="#girisYap">Giriş Yap</button>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-info my-2 mr-sm-2" href="~/Home/Mesajlasma">Mesajlar</a>
+                            <div class="btn-group show-on-hover">
+                                <button type="button" class="btn btn-outline-info my-2 mr-sm-2" data-toggle="dropdown">
+                                    Profilim<span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    @{
+                                        @Html.ActionLink("Profil Bilgileri", "KullaniciDetayi", new { id = Session["userID"] }, new { @class = "a", style = "color:#808080" })
+                                        <br />
+                                        @Html.ActionLink("Profil Düzenle", "profilDüzenle", new { id = Session["userID"] }, new { @class = "a", style = "color:#808080" })
+
+                                        foreach (var user in ViewBag.Users)
+                                        {
+
+                                            if (Convert.ToInt32(Session["userID"].ToString()) == user.userID)
+                                            {
+                                                if (user.steward != true)
+                                                {
+                                                    <li>
+                                                        @Html.ActionLink("Hizmet Veren Ol!", "hizmetVerenOl", new { id = user.userID }, new { @class = "a", style = "color:#808080" })
+                                                    </li>
+                                                }
+                                            }
+                                        }
+                                    }
+                                    <li class="divider"></li>
+                                    <li><a href="~/Home/cikisYap" style="color:#808080">Çıkış Yap</a></li>
+                                </ul>
+                            </div>
+                                        }
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!-- Nav Bar End -->
+    <div class="pb-lg-5">
+        @RenderBody()
+    </div>
+    @*<!-- Footer Start -->
+        <footer class="footer">
+            <div class="container">
+                <span class="text-muted">Place sticky footer content here.</span>
+            </div>
+        </footer>
+        <!-- Footer End -->*@
+
+    <footer>
+        <div class="footerHeader"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h3>Hakkımızda</h3>
+                    <p>
+                        @{
+                            if (Model.Hakkimizda.Length > 574)
+                            {
+                            <p>@Model.Hakkimizda.Substring(0, 574)...</p>
+                            }
+                            else
+                            {
+                                <p>@Model.Hakkimizda...</p>
+                            }
+                        }
+                        <a href="~/Home/Hakkimizda" style="font-size:12px">Devamını Oku</a>
+                        </p>
+                    </div>
+
+                    <div class="col-md-4">
+                        <h3>Adresimiz</h3>
+                        <iframe src=@Model.Adres width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+                    </div>
+                    <div class="col-md-4">
+                        <h3>İletişim</h3>
+                        <ul>
+                            <li>Telefon : @Model.Telefon</li>
+                            <li>E-Posta : @Model.EPosta</li>
+                        </ul>
+                        <p>
+                            @*Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s*@
+                        </p>
+                        <ul class="sm">
+
+                            <li><a href=@Model.Twitter><img src="http://playbookathlete.com/wp-content/uploads/2016/10/twitter-logo-4.png" class="img-fluid"></a></li>
+                            <li><a href=@Model.Facebook><img src="https://www.facebook.com/images/fb_icon_325x325.png" class="img-fluid"></a></li>
+                            <li><a href=@Model.LinkedIn><img src="https://lh3.googleusercontent.com/00APBMVQh3yraN704gKCeM63KzeQ-zHUi5wK6E9TjRQ26McyqYBt-zy__4i8GXDAfeys=w300" class="img-fluid"></a></li>
+                            @*<li><a href="#"><img src="https://lh3.googleusercontent.com/00APBMVQh3yraN704gKCeM63KzeQ-zHUi5wK6E9TjRQ26McyqYBt-zy__4i8GXDAfeys=w300" class="img-fluid"></a></li>
+                                <li><a href="#"><img src="https://lh3.googleusercontent.com/00APBMVQh3yraN704gKCeM63KzeQ-zHUi5wK6E9TjRQ26McyqYBt-zy__4i8GXDAfeys=w300" class="img-fluid"></a></li>*@
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        @*<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>*@
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+        <script src="~/Content/SBAdmin/js/holder.min.js"></script>
+
+        <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
+@RenderSection("scripts", required: false)    
+</body>
+</html>
+
+
+<div class="modal fade" id="girisYap" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Giriş Yap</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">E-Posta Adresi</label>
+                    <input type="email" class="form-control" placeholder="E-Posta" id="eposta">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Parola</label>
+                    <input type="password" class="form-control" placeholder="Parola" id="password">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="login-help">
+                    <a href="#" data-toggle="modal" data-target="#uyeOl" style="color:rgba(44, 62, 80, 1.0)">Üye Ol</a> - <a href="~/Admin/ForgetPassword" style="color:rgba(44, 62, 80, 1.0)">Şifremi Unuttum</a>
+                </div>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Geri</button>
+                <button id="girisYapButon" type="button" class="btn btn-primary">Giriş Yap</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#girisYapButon').click(function () {
+        // Call AJAX here
+        $.ajax({
+            method: "POST",
+            url: "/Home/girisYap", // Your URL here
+            data: {
+                'eposta': $("#eposta").val(),
+                'parola': $("#password").val(),
+            },
+            success: function () {
+                location.reload();
+            },// Your data here
+            error: function (xhr, httpStatusMessage, customErrorMessage) {
+                if (xhr.status === 410) {
+                    alert(customErrorMessage);
+                }
+                else if (xhr.status === 200) {
+                    location.reload();
+                }
+            }
+        });
+    });
+</script>
+
+
+<div id="uyeOl" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Üye Ol</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="container" id="needs-validation" novalidate>
+
+                <div class="modal-body">
+                    @*<form class="container" id="needs-validation" novalidate>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="validationCustom03">Email address</label>
+                                <input type="email" class="form-control" id="email" placeholder="email address" required>
+                                <div class="invalid-feedback">
+                                    Please provide a valid email.
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="validationCustom04">Name</label>
+                                <input type="text" class="form-control" id="validationCustom04" placeholder="Name" required>
+                                <div class="invalid-feedback">
+                                    Please provide a valid name.
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Submit form</button>*@
+
+                    <div class="form-group">
+                        <label for="validationCustom03">E-Posta Adresi</label>
+                        <input type="email" class="form-control" placeholder="E-Posta" id="epostaUyeOl" required>
+                        <div class="invalid-feedback">
+                            Please provide a valid email.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Parola</label>
+                        <input type="password" class="form-control" placeholder="Parola" id="passwordUyeOl">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Parola Tekrar</label>
+                        <input type="password" class="form-control" placeholder="Parola Tekrar" id="passwordTekrar">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Kullanıcı Adı</label>
+                        <input type="email" class="form-control" placeholder="Kullanıcı Adı" id="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">İsim</label>
+                        <input type="email" class="form-control" placeholder="İsim" id="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Soyisim</label>
+                        <input type="email" class="form-control" placeholder="Soyisim" id="surname">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Geri</button>
+                    <button id="uyeOlButon" type="submit" class="btn btn-primary">Üye Ol</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#searchInput").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Home/GetSearchValue",
+                    type: "POST",
+                    dataType: "json",
+                    data: { term: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.businessSubategory1,
+                                value: item.businessSubategory1
+                            }
+                        }))
+                    },
+                    messages: {
+                        noResults:"",results:""
+                    }
+                });
+            }
+        });
+    });
+
+</script>
+<script>
+    $("#needs-validation").submit(function (event) {
+        if (this.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        this.classList.add('was-validated');
+    });
+
+    // Email validation.
+    $("#epostaUyeOl").change(function () {
+        var email = $(this);
+        if (email.is(':invalid')) {
+            email.removeClass('is-valid').addClass('is-invalid');
+            email.siblings(".invalid-feedback").text(email.prop("validationMessage"))
+        } else {
+            email.removeClass('is-invalid').addClass('is-valid');
+        }
+    });
+</script>
+
+
+
+<script type="text/javascript">
+    $('#uyeOlButon').click(function () {
+        // Call AJAX here
+        $.ajax({
+            method: "POST",
+            url: "/Home/uyeOl", // Your URL here
+            data: {
+                'eposta': $("#epostaUyeOl").val(),
+                'parola': $("#passwordUyeOl").val(),
+                'parolaTekrar': $("#passwordTekrar").val(),
+                'username': $("#username").val(),
+                'name': $("#name").val(),
+                'surname': $("#surname").val(),
+            },
+            success: function () {
+                location.reload();
+            },// Your data here
+            error: function (xhr, httpStatusMessage, customErrorMessage) {
+                if (xhr.status === 410) {
+                    alert(customErrorMessage);
+                }
+                else if (xhr.status === 200) {
+                    alert(customErrorMessage);
+                    location.reload();
+                }
+            }
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    $('#altKategoriAraBtn').click(function () {
+        // Call AJAX here
+        $.ajax({
+            method: "POST",
+            url: "/Home/altKategoriAra", // Your URL here
+            dataType: 'json',
+            data: {
+                'altKategori': $("#searchInput").val(),
+            },
+            success: function (data) {
+                window.location.href = data;
+            }
+        });
+    });
+</script>
+
+
+
+

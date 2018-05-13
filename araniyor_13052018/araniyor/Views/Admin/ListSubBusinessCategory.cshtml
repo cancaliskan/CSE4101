@@ -1,0 +1,45 @@
+﻿@model IEnumerable<araniyor.Models.businessSubategory>
+
+@{
+    ViewBag.Title = "ListSubBusinessCategory";
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+}
+
+
+<h2>Alt Kategori Listesi</h2>
+<hr />
+<p>
+    @Html.ActionLink("Alt Kategori Oluştur", "CreateSubBusinessCategory", null, new { @class = "btn btn-primary btn" })
+</p>
+<div class="panel panel-primary filterable" style="overflow-x: auto;">
+
+    <table class="table table-bordered table-striped">
+        <div class="panel-heading">
+            <thead>
+                <tr class="filters">
+                    <th style="width:40%"><input type="text" class="form-control" placeholder="Kategori İsmi"></th>
+                    <th style="width:40%"><input type="text" class="form-control" placeholder="Alt Kategori İsmi"></th>
+                    <th style="width:20%"></th>
+                </tr>
+            </thead>
+        </div>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.businessCategory.businessCategory1)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.businessSubategory1)
+                </td>
+                <td>
+                    @Html.ActionLink("Düzenle", "EditSubBusinessCategory", new { id = item.businessSubategoryID }, new { @class = "btn btn-warning btn" }) 
+                    @Html.ActionLink("Detay", "DetailsSubBusinessCategory", new { id = item.businessSubategoryID }, new { @class = "btn btn-primary btn" })
+                    @Html.ActionLink("Sil", "DeleteSubBusinessCategory", new { id = item.businessSubategoryID }, new { @class = "btn btn-danger btn" })
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

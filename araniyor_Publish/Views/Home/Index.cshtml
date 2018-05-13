@@ -1,0 +1,397 @@
+﻿@model araniyor.Models.AboutUs
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+
+<style class="cp-pen-styles">
+    /** base */
+    *, *:before, *:after {
+        box-sizing: border-box;
+    }
+
+    /** slider */
+    .slider {
+        position: relative;
+        max-width: 100%;
+        max-height: 100%;
+        margin: 0 auto;
+    }
+
+        .slider:hover .slider__radiobox-label--prev,
+        .slider:hover .slider__radiobox-label--next {
+            opacity: 1;
+        }
+
+        .slider:hover .slider__radiobox-label--prev {
+            left: 6%;
+        }
+
+        .slider:hover .slider__radiobox-label--next {
+            right: 6%;
+        }
+
+    .slider--full {
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .slider--fixed {
+        width: 600px;
+        height: 400px;
+    }
+
+    .slider--proportional {
+        width: 960px;
+        height: auto;
+    }
+
+    .slider__inner {
+        position: relative;
+        margin: 0 auto;
+        overflow: hidden;
+        background: #ddd;
+    }
+
+    .slider--full .slider__inner {
+        width: 100%;
+        height: 100%;
+    }
+
+    .slider--fixed .slider__inner {
+        width: 100%;
+        height: 100%;
+    }
+
+    .slider--proportional .slider__inner {
+        width: 100%;
+        height: 0;
+    }
+
+    .slider--proportional--4x3 .slider__inner {
+        padding-top: 75%;
+    }
+
+    .slider--proportional--5x4 .slider__inner {
+        padding-top: 80%;
+    }
+
+    .slider--proportional--16x9 .slider__inner {
+        padding-top: 56.25%;
+    }
+
+    .slider__slides {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+        width: 400%;
+        height: 100%;
+        overflow-y: hidden;
+        -webkit-transition: margin-left 0.4s;
+        transition: margin-left 0.4s;
+    }
+
+    .slider__slide {
+        display: block;
+        float: left;
+        position: relative;
+        width: 25%;
+        height: 100%;
+        /** background-image method */
+        background: no-repeat 50% 50%;
+        background-size: cover;
+        /** inline image method */
+    }
+
+    .slider__radiobox-label {
+        display: block;
+        position: absolute;
+        z-index: 2;
+        cursor: pointer;
+    }
+
+    .slider__radiobox-label--item {
+        bottom: 6%;
+        left: 50%;
+        -webkit-transform: translateX(-50%);
+        transform: translateX(-50%);
+        padding: 6px;
+        border-radius: 50%;
+        background: black;
+        opacity: 0.3;
+        -webkit-transition: opacity 0.2s;
+        transition: opacity 0.2s;
+    }
+
+        .slider__radiobox-label--item:hover {
+            opacity: 0.5;
+        }
+
+    .slider__radiobox-label--item--1 {
+        margin-left: -36px;
+    }
+
+    .slider__radiobox-label--item--2 {
+        margin-left: -12px;
+    }
+
+    .slider__radiobox-label--item--3 {
+        margin-left: 12px;
+    }
+
+    .slider__radiobox-label--item--4 {
+        margin-left: 36px;
+    }
+
+    .slider__radiobox-label--prev, .slider__radiobox-label--next {
+        display: none;
+        top: 50%;
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+        height: 0;
+        border: 10px solid black;
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+        opacity: 0;
+        -webkit-transition: left 0.2s, right 0.2s, opacity 0.2s;
+        transition: left 0.2s, right 0.2s, opacity 0.2s;
+    }
+
+    .slider__radiobox-label--prev {
+        left: -6%;
+        border-left: 0;
+        border-right-width: 17px;
+    }
+
+    .slider__radiobox-label--next {
+        right: -6%;
+        border-right: 0;
+        border-left-width: 17px;
+    }
+
+    .slider__radiobox {
+        display: none;
+    }
+
+    .slider__radiobox--1:checked ~ .slider__slides {
+        margin-left: 0;
+    }
+
+    .slider__radiobox--2:checked ~ .slider__slides {
+        margin-left: -100%;
+    }
+
+    .slider__radiobox--3:checked ~ .slider__slides {
+        margin-left: -200%;
+    }
+
+    .slider__radiobox--4:checked ~ .slider__slides {
+        margin-left: -300%;
+    }
+
+    .slider__radiobox--1:checked + .slider__radiobox-label--item--1, .slider__radiobox--2:checked + .slider__radiobox-label--item--2, .slider__radiobox--3:checked + .slider__radiobox-label--item--3, .slider__radiobox--4:checked + .slider__radiobox-label--item--4 {
+        opacity: 1;
+    }
+
+    .slider__radiobox--1:checked ~ .slider__radiobox-label--prev--4, .slider__radiobox--1:checked ~ .slider__radiobox-label--next--2, .slider__radiobox--2:checked ~ .slider__radiobox-label--prev--1, .slider__radiobox--2:checked ~ .slider__radiobox-label--next--3, .slider__radiobox--3:checked ~ .slider__radiobox-label--prev--2, .slider__radiobox--3:checked ~ .slider__radiobox-label--next--4, .slider__radiobox--4:checked ~ .slider__radiobox-label--prev--3, .slider__radiobox--4:checked ~ .slider__radiobox-label--next--1 {
+        display: block;
+    }
+
+    /** card css start**/
+    .card-title {
+        color: darkslategray;
+    }
+
+    .search-row-wrapper {
+        background-size: cover;
+        background-repeat: no-repeat;
+        height: 250px;
+        padding: 50px 0;
+        transition: all 400ms cubic-bezier(0.25,0.1,0.25,1) 0s;
+        -webkit-transition: all 400ms cubic-bezier(0.25,0.1,0.25,1) 0s;
+        width: 100%;
+        background-position: center;
+    }
+    /** card css finish**/
+</style>
+
+@{
+    string base64 = null,
+           SliderResim1 = null,
+           SliderResim2 = null,
+           SliderResim3 = null,
+           SliderResim4 = null;
+
+    if (Model.SliderResim1 != null)
+    {
+        base64 = Convert.ToBase64String(Model.SliderResim1);
+        SliderResim1 = String.Format("data:image/gif;base64,{0}", base64);
+    }
+    if (Model.SliderResim2 != null)
+    {
+        base64 = Convert.ToBase64String(Model.SliderResim2);
+        SliderResim2 = String.Format("data:image/gif;base64,{0}", base64);
+    }
+    if (Model.SliderResim3 != null)
+    {
+        base64 = Convert.ToBase64String(Model.SliderResim3);
+        SliderResim3 = String.Format("data:image/gif;base64,{0}", base64);
+    }
+    if (Model.SliderResim4 != null)
+    {
+        base64 = Convert.ToBase64String(Model.SliderResim4);
+        SliderResim4 = String.Format("data:image/gif;base64,{0}", base64);
+    }
+}
+<div class="slider slider--full">
+    <!-- <div class="slider slider--fixed"> -->
+    <!-- <div class="slider slider--proportional slider--proportional--16x9"> -->
+    <div class="slider__inner">
+        <input checked type="radio" name="slider__radiobox" id="slider__radiobox--1" class="slider__radiobox slider__radiobox--1"><label for="slider__radiobox--1" class="slider__radiobox-label slider__radiobox-label--item slider__radiobox-label--item--1"></label><label for="slider__radiobox--4" class="slider__radiobox-label slider__radiobox-label--prev slider__radiobox-label--prev--4"></label><label for="slider__radiobox--2" class="slider__radiobox-label slider__radiobox-label--next slider__radiobox-label--next--2"></label>
+        <input type="radio" name="slider__radiobox" id="slider__radiobox--2" class="slider__radiobox slider__radiobox--2"><label for="slider__radiobox--2" class="slider__radiobox-label slider__radiobox-label--item slider__radiobox-label--item--2"></label><label for="slider__radiobox--1" class="slider__radiobox-label slider__radiobox-label--prev slider__radiobox-label--prev--1"></label><label for="slider__radiobox--3" class="slider__radiobox-label slider__radiobox-label--next slider__radiobox-label--next--3"></label>
+        <input type="radio" name="slider__radiobox" id="slider__radiobox--3" class="slider__radiobox slider__radiobox--3"><label for="slider__radiobox--3" class="slider__radiobox-label slider__radiobox-label--item slider__radiobox-label--item--3"></label><label for="slider__radiobox--2" class="slider__radiobox-label slider__radiobox-label--prev slider__radiobox-label--prev--2"></label><label for="slider__radiobox--4" class="slider__radiobox-label slider__radiobox-label--next slider__radiobox-label--next--4"></label>
+        <input type="radio" name="slider__radiobox" id="slider__radiobox--4" class="slider__radiobox slider__radiobox--4"><label for="slider__radiobox--4" class="slider__radiobox-label slider__radiobox-label--item slider__radiobox-label--item--4"></label><label for="slider__radiobox--3" class="slider__radiobox-label slider__radiobox-label--prev slider__radiobox-label--prev--3"></label><label for="slider__radiobox--1" class="slider__radiobox-label slider__radiobox-label--next slider__radiobox-label--next--1"></label>
+        <div class="slider__slides">
+            <div class="slider__slide slider__slide--1" style="background-image: url(@SliderResim1) "></div>
+            <div class="slider__slide slider__slide--2" style="background-image: url(@SliderResim2) "></div>
+            <div class="slider__slide slider__slide--3" style="background-image: url(@SliderResim3) "></div>
+            <div class="slider__slide slider__slide--4" style="background-image: url(@SliderResim4) "></div>
+            <input style="margin-top:20px;" class="form-control mr-sm-2" type="search" placeholder="Aranacak Kategori" aria-label="Search" name="searchInput" id="searchInput">
+        </div>
+    </div>
+</div>
+
+@{
+    string HakkimizdaResim = null,
+        VizyonResim = null,
+        MisyonResim = null;
+
+    if (Model.HakkimizdaResim != null)
+    {
+        base64 = Convert.ToBase64String(Model.HakkimizdaResim);
+        HakkimizdaResim = String.Format("data:image/gif;base64,{0}", base64);
+    }
+    if (Model.VizyonResim != null)
+    {
+        base64 = Convert.ToBase64String(Model.VizyonResim);
+        VizyonResim = String.Format("data:image/gif;base64,{0}", base64);
+    }
+    if (Model.MisyonResim != null)
+    {
+        base64 = Convert.ToBase64String(Model.MisyonResim);
+        MisyonResim = String.Format("data:image/gif;base64,{0}", base64);
+    }
+}
+<div class="container pb-5 pt-5">
+    <div class="row">
+        <!-- Grid column -->
+        <div class="col-lg-4 col-md-12 mb-4">
+            <!--Card-->
+            <div class="card">
+                <!--Card image-->
+                <div class="view overlay hm-white-slight">
+                    <div class="search-row-wrapper" style="background-image:url(@HakkimizdaResim);">
+                        @*<img class="img-fluid rounded" src="@imgSrc" alt="@user.name">*@
+                    </div>
+                    <a href="#!">
+                        <div class="mask waves-effect waves-light"></div>
+                    </a>
+                </div>
+                <!--Card content-->
+                <div class="card-body">
+                    <!--Title-->
+                    <h4 class="card-title">Hakkımızda</h4>
+                    <!--Text-->
+                    @{
+                        if (Model.Hakkimizda.Length > 147)
+                        {
+                            <p class="card-text">@Model.Hakkimizda.Substring(0, 147)...</p>
+                        }
+                        else
+                        {
+                            <p class="card-text">@Model.Hakkimizda ...</p>
+                        }
+                    }
+                    <a class="nav-link" href="~/Home/Hakkimizda" style="color:rgba(44, 62, 80, 1.0);">Devamını Oku</a>
+                </div>
+            </div>
+            <!--/.Card-->
+        </div>
+        <!-- Grid column -->
+        <!-- Grid column -->
+        <div class="col-lg-4 col-md-12 mb-4">
+            <!--Card-->
+            <div class="card">
+                <!--Card image-->
+                <div class="view overlay hm-white-slight">
+                    @*<img src="@MisyonResim" class="img-fluid" alt="photo">*@
+                    <div class="search-row-wrapper" style="background-image:url(@MisyonResim);">
+                        @*<img class="img-fluid rounded" src="@imgSrc" alt="@user.name">*@
+                    </div>
+                    <a href="#!">
+                        <div class="mask waves-effect waves-light"></div>
+                    </a>
+                </div>
+                <!--Card content-->
+                <div class="card-body">
+                    <!--Title-->
+                    <h4 class="card-title">Misyonumuz</h4>
+                    <!--Text-->
+                    @{
+                        if (Model.Misyon.Length > 147)
+                        {
+                            <p class="card-text">@Model.Misyon.Substring(0, 147)...</p>
+                        }
+                        else
+                        {
+                            <p class="card-text">@Model.Misyon...</p>
+                        }
+                    }
+                    <a class="nav-link" href="~/Home/Misyon" style="color:rgba(44, 62, 80, 1.0);">Devamını Oku</a>
+                </div>
+            </div>
+            <!--/.Card-->
+        </div>
+        <!-- Grid column -->
+        <!-- Grid column -->
+        <div class="col-lg-4 col-md-12 mb-4">
+            <!--Card-->
+            <div class="card">
+                <!--Card image-->
+                <div class="view overlay hm-white-slight">
+                    @*<img src="@VizyonResim" class="img-fluid" alt="photo">*@
+                    <div class="search-row-wrapper" style="background-image:url(@VizyonResim);">
+                        @*<img class="img-fluid rounded" src="@imgSrc" alt="@user.name">*@
+                    </div>
+                    <a href="#!">
+                        <div class="mask waves-effect waves-light"></div>
+                    </a>
+                </div>
+                <!--Card content-->
+                <div class="card-body">
+                    <!--Title-->
+                    <h4 class="card-title">Vizyonumuz</h4>
+                    <!--Text-->
+                    @{
+                        if (Model.Vizyon.Length > 147)
+                        {
+                            <p class="card-text">@Model.Vizyon.Substring(0, 147)...</p>
+                        }
+                        else
+                        {
+                            <p class="card-text">@Model.Vizyon...</p>
+                        }
+                    }
+                    <a class="nav-link" href="~/Home/Vizyon" style="color:rgba(44, 62, 80, 1.0);">Devamını Oku</a>
+                </div>
+            </div>
+            <!--/.Card-->
+        </div>
+        <!-- Grid column -->
+    </div>
+</div>

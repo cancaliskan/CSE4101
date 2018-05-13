@@ -1,0 +1,59 @@
+﻿@model araniyor.Models.messages
+
+@{
+    ViewBag.Title = "DetailsMesaj";
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+}
+
+
+<div class="container pb-5">
+    <div>
+        <h4>Mesaj Detayı</h4>
+        <hr />
+        <dt>
+            @Html.DisplayNameFor(model => model.senderID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.senderID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.receiverID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.receiverID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.message)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.message)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.conversationID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.conversationID)
+        </dd>
+
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Düzenle", "EditMesaj", new { id = Model.messageID }, new { @class = "btn btn-primary btn" })
+        @Html.ActionLink("Geri Dön", "ListMesaj", null, new { @class = "btn btn-warning" })
+    </p>
+</div>

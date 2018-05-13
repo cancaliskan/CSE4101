@@ -1,0 +1,51 @@
+﻿@model araniyor.Models.Yorumlar
+
+@{
+    ViewBag.Title = "DetailsYorum";
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+}
+
+<div class="container pb-5">
+    <div>
+        <h4>Kategori Detayı</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.yorumYapan)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.yorumYapan)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.yorumYapilan)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.yorumYapilan)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.yorumMetni)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.yorumMetni)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.yorumTarihi)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.yorumTarihi)
+            </dd>
+
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Düzenle", "EditYorum", new { id = Model.ID }, new { @class = "btn btn-primary btn" })
+        @Html.ActionLink("Geri Dön", "ListYorum", null, new { @class = "btn btn-warning" })
+    </p>
+</div>

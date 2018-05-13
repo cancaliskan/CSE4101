@@ -1,0 +1,554 @@
+﻿
+@{
+    ViewBag.Title = "ListUser";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<style>
+    .card-title a {
+        color: rgba(44, 62, 80, 1.0);
+    }
+
+        .card-title a:hover {
+            color: rgba(52, 73, 94,1.0);
+        }
+
+    .search-row-wrapper {
+        background-size: contain;
+        background-repeat: no-repeat;
+        height: 250px;
+        padding: 50px 0;
+        transition: all 400ms cubic-bezier(0.25,0.1,0.25,1) 0s;
+        -webkit-transition: all 400ms cubic-bezier(0.25,0.1,0.25,1) 0s;
+        width: 100%;
+        background-position: center;
+    }
+</style>
+<style>
+    #accordion a {
+        color: #17a2b8;
+    }
+
+    #accordion h3 {
+        color: #17a2b8;
+    }
+
+    .behclick-panel .list-group {
+        margin-bottom: 0px;
+    }
+
+    .behclick-panel .list-group-item:first-child {
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+    }
+
+    .behclick-panel .list-group-item {
+        border-right: 0px;
+        border-left: 0px;
+    }
+
+        .behclick-panel .list-group-item:last-child {
+            border-bottom-right-radius: 0px;
+            border-bottom-left-radius: 0px;
+        }
+
+    .behclick-panel .list-group-item {
+        padding: 5px;
+    }
+
+    .behclick-panel .panel-heading {
+        /* 				padding: 10px 15px;
+                            border-bottom: 1px solid transparent; */
+        border-top-right-radius: 0px;
+        border-top-left-radius: 0px;
+        border-bottom: 1px solid darkslategrey;
+    }
+
+        .behclick-panel .panel-heading:last-child {
+            /* border-bottom: 0px; */
+        }
+
+    .behclick-panel {
+        border-radius: 0px;
+        border-right: 0px;
+        border-left: 0px;
+        border-bottom: 0px;
+        box-shadow: 0 0px 0px rgba(0, 0, 0, 0);
+    }
+
+        .behclick-panel .radio, .checkbox {
+            margin: 0px;
+            padding-left: 10px;
+        }
+
+        .behclick-panel .panel-title > a, .panel-title > small, .panel-title > .small, .panel-title > small > a, .panel-title > .small > a {
+            outline: none;
+        }
+
+        .behclick-panel .panel-body > .panel-heading {
+            padding: 10px 10px;
+        }
+
+        .behclick-panel .panel-body {
+            padding: 0px;
+        }
+        /* unvisited link */
+        .behclick-panel a:link {
+            text-decoration: none;
+        }
+
+        /* visited link */
+        .behclick-panel a:visited {
+            text-decoration: none;
+        }
+
+        /* mouse over link */
+        .behclick-panel a:hover {
+            text-decoration: none;
+        }
+
+        /* selected link */
+        .behclick-panel a:active {
+            text-decoration: none;
+        }
+</style>
+<div class="container pt-5 pb-5 mt-5 mb-5">
+    <div class="row ">
+        <form action="/Home/filtrele/" method="post" style="text-align:center;">
+            <input type="hidden" name="altKategoriID" value=@ViewBag.altKategoriID />
+            <div id="accordion" class="panel panel-primary behclick-panel" style="text-align:left;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Filtreleme</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="panel-heading ">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse0" aria-expanded="false" class="collapsed">
+                                <i class="indicator fa fa-caret-down" aria-hidden="true"></i> Şehir
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse0" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                        @foreach (var item in ViewBag.ilce)
+                        {
+                            foreach (var item2 in ViewBag.ilceListe)
+                            {
+                                if (Convert.ToInt32(item) == item2.ID)
+                                {
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" name="ilce" id="ilce @item2.ID" value=@item2.ID />
+                                        <label class="custom-control-label" for="ilce @item2.ID">@item2.City1</label>
+                                    </div>
+                                }
+                            }
+                        }
+                    </div>
+
+                    <div class="panel-heading ">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse1" aria-expanded="false" class="collapsed">
+                                <i class="indicator fa fa-caret-down" aria-hidden="true"></i> Deneyim (Yıl)
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse1" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                        @foreach (var item in ViewBag.Deneyim)
+                        {
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" name="deneyim" id="deneyim @item" value=@item />
+                                <label class="custom-control-label" for="deneyim @item">@item</label>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="panel-heading ">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse2" aria-expanded="false" class="collapsed">
+                                <i class="indicator fa fa-caret-down" aria-hidden="true"></i> Puanlama
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse2" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                        @{
+                            bool sifirBir = false, birIki = false, ikiUc = false, ucDort = false, dortBes = false;
+                            foreach (var item in ViewBag.Puan)
+                            {
+                                if ((item >= 0 && item < 1) && sifirBir == false)
+                                {
+                                    sifirBir = true;
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" name="puanlama" id="puan11" value="11" />
+                                        <label class="custom-control-label" for="puan11">0 - 1 Arasında</label>
+                                    </div>
+                                }
+                                else if ((item >= 1 && item < 2) && birIki == false)
+                                {
+                                    birIki = true;
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" name="puanlama" id="puan12" value="12" />
+                                        <label class="custom-control-label" for="puan12">1 - 2 Arasında</label>
+                                    </div>
+                                }
+                                else if ((item >= 2 && item < 3) && ikiUc == false)
+                                {
+                                    ikiUc = true;
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" name="puanlama" id="puan23" value="23" />
+                                        <label class="custom-control-label" for="puan23">2 - 3 Arasında</label>
+                                    </div>
+                                }
+                                else if ((item >= 3 && item < 4) && ucDort == false)
+                                {
+                                    ucDort = true;
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" name="puanlama" id="puan34" value="34" />
+                                        <label class="custom-control-label" for="puan34">3 - 4 Arasında</label>
+                                    </div>
+                                }
+                                else if ((item >= 4 && item <= 5) && dortBes == false)
+                                {
+                                    dortBes = true;
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" name="puanlama" id="puan45" value="45" />
+                                        <label class="custom-control-label" for="puan45">4 - 5 Arasında</label>
+                                    </div>
+                                }
+                            }
+                        }
+                    </div>
+
+                    <div class="panel-heading ">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse3" aria-expanded="false" class="collapsed">
+                                <i class="indicator fa fa-caret-down" aria-hidden="true"></i> Cinsiyet
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse3" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+
+                        @{
+                            bool erkekBool = false, kadinBool = false;
+                            foreach (var item in ViewBag.Cinsiyet)
+                            {
+                                if (item == "Kadın" && kadinBool == false)
+                                {
+                                    kadinBool = true;
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" name="cinsiyet" id="kadin" value="-1" />
+                                        <label class="custom-control-label" for="kadin">Kadın</label>
+                                    </div>
+                                }
+                                else if (item == "Erkek" && erkekBool == false)
+                                {
+                                    erkekBool = true;
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" name="cinsiyet" id="erkek" value="-2" />
+                                        <label class="custom-control-label" for="erkek">Erkek</label>
+                                    </div>
+                                }
+                            }
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+            <br />
+            <input class="btn btn-toolbar" style="background-color:#17a2b8; color:white; " type="submit" name="submit" value="Getir" /><br>
+        </form>
+        <div class="col-md-9">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="dropdown ml-3 ">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Sıralama Seçiniz
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a id="puanaGoreAzalan" class="dropdown-item" href="@Url.Action("ListUser", "Home", new { altKategoriID = ViewBag.altKategoriID, siralamaSekli = "puanaGoreAzalan",ilkListeleme=true }, null)">Puana Göre Azalan</a>
+                            <a id="puanaGoreArtan" class="dropdown-item" href="@Url.Action("ListUser", "Home", new { altKategoriID = ViewBag.altKategoriID, siralamaSekli = "puanaGoreArtan",ilkListeleme=true }, null)">Puana Göre Artan</a>
+                            <a id="deneyimeGoreAzalan" class="dropdown-item" href="@Url.Action("ListUser", "Home", new { altKategoriID = ViewBag.altKategoriID, siralamaSekli = "deneyimeGoreAzalan",ilkListeleme=true }, null)">Deneyime Göre Azalan</a>
+                            <a id="deneyimeGoreArtan" class="dropdown-item" href="@Url.Action("ListUser", "Home", new { altKategoriID = ViewBag.altKategoriID, siralamaSekli = "deneyimeGoreArtan",ilkListeleme=true }, null)">Deneyime Göre Artan</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="ajax-main">
+                    @Html.Partial("_UserList", null)
+                </div>
+                @if (ViewBag.ilkListeleme == true)
+                {
+                    if (ViewBag.siralamaSekli == null)
+                    {
+                        <input style="background-color:#17a2b8; color:white;" type="button" id="dahafazla" value="Daha Fazla" class="col-md-12 mt-5" />
+                    }
+                    else if (ViewBag.siralamaSekli == "puanaGoreAzalan")
+                    {
+                        <input style="background-color:#17a2b8; color:white;" type="button" id="dahafazlapuanaGoreAzalan" value="Daha Fazla" class="col-md-12 mt-5" />
+                    }
+                    else if (ViewBag.siralamaSekli == "puanaGoreArtan")
+                    {
+                        <input style="background-color:#17a2b8; color:white;" type="button" id="dahafazlapuanaGoreArtan" value="Daha Fazla" class="col-md-12 mt-5" />
+                    }
+                    else if (ViewBag.siralamaSekli == "deneyimeGoreAzalan")
+                    {
+                        <input style="background-color:#17a2b8; color:white;" type="button" id="dahafazladeneyimeGoreAzalan" value="Daha Fazla" class="col-md-12 mt-5" />
+                    }
+                    else if (ViewBag.siralamaSekli == "deneyimeGoreArtan")
+                    {
+                        <input style="background-color:#17a2b8; color:white;" type="button" id="dahafazladeneyimeGoreArtan" value="Daha Fazla" class="col-md-12 mt-5" />
+                    }
+                }
+                <div class="row">
+                    <div id="load" style="display:none;">
+                        <b>Kayıtlar Yükleniyor...</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var pageNo = 1;
+    $('#dahafazla').click(function () {
+        var pageNo = 1;
+        var isPageLoad =true;
+        if(isPageLoad)
+        {
+            $("#load").show();
+            $.ajax({
+                url: '/Home/ListUser',
+                data: {altKategoriID: @ViewBag.altKategoriID, page: pageNo,ilkListeleme:true,},
+                success: function(data){
+                    $("#ajax-main").append(data);
+                    pageNo++;
+                    $("#load").hide();
+                    if ($.trim(data == '')) {
+                        isPageLoad =false;
+                        $("#dahafazla").hide();
+                    }
+                }
+            });
+        }
+        // }
+    });
+
+</script>
+<script type="text/javascript">
+    var pageNo = 1;
+    $('#dahafazlapuanaGoreAzalan').click(function () {
+        var pageNo = 1;
+        var isPageLoad =true;
+        if(isPageLoad)
+        {
+            $("#load").show();
+            $.ajax({
+                url: '/Home/ListUser',
+                data: {altKategoriID: @ViewBag.altKategoriID, page: pageNo, siralamaSekli:"puanaGoreAzalan",ilkListeleme:true},
+                success: function(data){
+                    $("#ajax-main").append(data);
+                    pageNo++;
+                    $("#load").hide();
+                    if ($.trim(data == '')) {
+                        isPageLoad =false;
+                        $("#dahafazlapuanaGoreAzalan").hide();
+                    }
+                }
+            });
+        }
+        // }
+    });
+
+</script>
+
+<script type="text/javascript">
+    var pageNo = 1;
+    $('#dahafazlapuanaGoreArtan').click(function () {
+        var pageNo = 1;
+        var isPageLoad =true;
+        if(isPageLoad)
+        {
+            $("#load").show();
+            $.ajax({
+                url: '/Home/ListUser',
+                data: {altKategoriID: @ViewBag.altKategoriID, page: pageNo, siralamaSekli:"puanaGoreArtan",ilkListeleme:true},
+                success: function(data){
+                    $("#ajax-main").append(data);
+                    pageNo++;
+                    $("#load").hide();
+                    if ($.trim(data == '')) {
+                        isPageLoad =false;
+                        $("#dahafazlapuanaGoreArtan").hide();
+                    }
+                }
+            });
+        }
+        // }
+    });
+
+</script>
+
+<script type="text/javascript">
+    var pageNo = 1;
+    $('#dahafazladeneyimeGoreAzalan').click(function () {
+        var pageNo = 1;
+        var isPageLoad =true;
+        if(isPageLoad)
+        {
+            $("#load").show();
+            $.ajax({
+                url: '/Home/ListUser',
+                data: {altKategoriID: @ViewBag.altKategoriID, page: pageNo, siralamaSekli:"deneyimeGoreAzalan",ilkListeleme:true},
+                success: function(data){
+                    $("#ajax-main").append(data);
+                    pageNo++;
+                    $("#load").hide();
+                    if ($.trim(data == '')) {
+                        isPageLoad =false;
+                        $("#dahafazladeneyimeGoreAzalan").hide();
+                    }
+                }
+            });
+        }
+        // }
+    });
+
+</script>
+
+<script type="text/javascript">
+    var pageNo = 1;
+    $('#dahafazladeneyimeGoreArtan').click(function () {
+        var pageNo = 1;
+        var isPageLoad =true;
+        if(isPageLoad)
+        {
+            $("#load").show();
+            $.ajax({
+                url: '/Home/ListUser',
+                data: {altKategoriID: @ViewBag.altKategoriID, page: pageNo, siralamaSekli:"deneyimeGoreArtan",ilkListeleme:true},
+                success: function(data){
+                    $("#ajax-main").append(data);
+                    pageNo++;
+                    $("#load").hide();
+                    if ($.trim(data == '')) {
+                        isPageLoad =false;
+                        $("#dahafazladeneyimeGoreArtan").hide();
+                    }
+                }
+            });
+        }
+        // }
+    });
+
+</script>
+
+<script type="text/javascript">
+    var pageNo = 1;
+    $('#puanaGoreAzalan').click(function () {
+        var pageNo = 1;
+        var isPageLoad =true;
+        if(isPageLoad)
+        {
+            $("#load").show();
+            $.ajax({
+                url: '/Home/ListUser',
+                data: {altKategoriID: @ViewBag.altKategoriID, page: pageNo, siralamaSekli="puanaGoreAzalan",ilkListeleme:true},
+                success: function(data){
+                    $("#ajax-main").append(data);
+                    pageNo++;
+                    $("#load").hide();
+                    if ($.trim(data == '')) {
+                        isPageLoad =false;
+                        $("#dahafazla").hide();
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+<script type="text/javascript">
+    var pageNo = 1;
+    $('#puanaGoreArtan').click(function () {
+        var pageNo = 1;
+        var isPageLoad =true;
+        if(isPageLoad)
+        {
+            $("#load").show();
+            $.ajax({
+                url: '/Home/ListUser',
+                data: {altKategoriID: @ViewBag.altKategoriID, page: pageNo, siralamaSekli="puanaGoreArtan",ilkListeleme:true},
+                success: function(data){
+                    $("#ajax-main").append(data);
+                    pageNo++;
+                    $("#load").hide();
+                    if ($.trim(data == '')) {
+                        isPageLoad =false;
+                        $("#dahafazla").hide();
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+<script type="text/javascript">
+    var pageNo = 1;
+    $('#deneyimeGoreAzalan').click(function () {
+        var pageNo = 1;
+        var isPageLoad =true;
+        if(isPageLoad)
+        {
+            $("#load").show();
+            $.ajax({
+                url: '/Home/ListUser',
+                data: {altKategoriID: @ViewBag.altKategoriID, page: pageNo, siralamaSekli="deneyimeGoreAzalan"},
+                success: function(data){
+                    $("#ajax-main").append(data);
+                    pageNo++;
+                    $("#load").hide();
+                    if ($.trim(data == '')) {
+                        isPageLoad =false;
+                        $("#dahafazla").hide();
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+<script type="text/javascript">
+    var pageNo = 1;
+    $('#deneyimeGoreArtan').click(function () {
+        var pageNo = 1;
+        var isPageLoad =true;
+        if(isPageLoad)
+        {
+            $("#load").show();
+            $.ajax({
+                url: '/Home/ListUser',
+                data: {altKategoriID: @ViewBag.altKategoriID, page: pageNo, siralamaSekli="deneyimeGoreArtan"},
+                success: function(data){
+                    $("#ajax-main").append(data);
+                    pageNo++;
+                    $("#load").hide();
+                    if ($.trim(data == '')) {
+                        isPageLoad =false;
+                        $("#dahafazla").hide();
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+@*<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>*@
+<script type="text/javascript">
+    function toggleChevron(e) {
+        $(e.target)
+                .prev('.panel-heading')
+                .find("i.indicator")
+                .toggleClass('fa-caret-down fa-caret-right');
+    }
+    $('#accordion').on('hidden.bs.collapse', toggleChevron);
+    $('#accordion').on('shown.bs.collapse', toggleChevron);
+</script>

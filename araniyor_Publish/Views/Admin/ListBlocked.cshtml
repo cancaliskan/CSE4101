@@ -1,0 +1,48 @@
+﻿@model IEnumerable<araniyor.Models.blocked>
+
+@{
+    ViewBag.Title = "ListBlocked";
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+}
+
+<h2>Engellenen Kullanıcı Listesi</h2>
+<hr />
+<p>
+    @Html.ActionLink("Kullanıcı Engelle", "CreateBlocked", null, new { @class = "btn btn-primary btn" })
+</p>
+<div class="panel panel-primary filterable">
+
+    <table class="table table-bordered table-striped">
+        <div class="panel-heading">
+            <thead>
+                <tr class="filters">
+                    <th style="width:auto"><input type="text" class="form-control" placeholder="Engelleyen Kullanıcı"></th>
+                    <th style="width:auto"><input type="text" class="form-control" placeholder="Engellenen Kullanıcı"></th>
+                    <th style="width:auto"><input type="text" class="form-control" placeholder="Engelleme Tarihi"></th>
+                    <th style="width:auto"></th>
+                </tr>
+            </thead>
+        </div>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Users.username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Users1.username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.date)
+                </td>
+                <td>
+                    @Html.ActionLink("Düzenle", "EditBlocked", new { id = item.blockID }, new { @class = "btn btn-warning btn-sm" }) 
+                    @Html.ActionLink("Detay", "DetailsBlocked", new { id = item.blockID }, new { @class = "btn btn-primary btn-sm" }) 
+                    @Html.ActionLink("Sil", "DeleteBlocked", new { id = item.blockID }, new { @class = "btn btn-danger btn-sm" })
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

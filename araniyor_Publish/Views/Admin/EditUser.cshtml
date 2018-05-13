@@ -1,0 +1,599 @@
+﻿@model araniyor.Models.Users
+
+@{
+    ViewBag.Title = "EditUser";
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+}
+<style>
+    /* FILE UPLOAD START*/
+    /*just bg and body style*/
+    .container {
+        /*background-color: #1E2832;*/
+        padding-bottom: 20px;
+        margin-top: 10px;
+        border-radius: 5px;
+    }
+
+    .center {
+        text-align: center;
+    }
+
+    #top {
+        margin-top: 20px;
+    }
+
+    .btn-container {
+        background: #fff;
+        border-radius: 5px;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+
+    .white {
+        color: white;
+    }
+
+    .imgupload {
+        color: #1E2832;
+        padding-top: 40px;
+        font-size: 7em;
+    }
+
+    #namefile {
+        color: black;
+    }
+
+    h4 > strong {
+        color: #ff3f3f;
+    }
+
+    .btn-primary {
+        border-color: #ff3f3f !important;
+        color: #ffffff;
+        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+        background-color: #ff3f3f !important;
+        border-color: #ff3f3f !important;
+    }
+
+    /*these two are set to not display at start*/
+    .imgupload.ok {
+        display: none;
+        color: green;
+    }
+
+    .imgupload.stop {
+        display: none;
+        color: red;
+    }
+
+
+    /*this sets the actual file input to overlay our button*/
+    #fileup {
+        opacity: 0;
+        -moz-opacity: 0;
+        filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+        width: 200px;
+        cursor: pointer;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 40px;
+        height: 50px;
+    }
+
+    /*switch between input and not active input*/
+    #submitbtn {
+        padding: 5px 50px;
+        display: none;
+    }
+
+    #fakebtn {
+        padding: 5px 40px;
+    }
+
+
+    /*www.emilianocostanzo.com*/
+    #sign {
+        color: #1E2832;
+        position: fixed;
+        right: 10px;
+        bottom: 10px;
+        text-shadow: 0px 0px 0px #1E2832;
+        transition: all.3s;
+    }
+
+        #sign:hover {
+            color: #1E2832;
+            text-shadow: 0px 0px 5px #1E2832;
+        }
+    /* FILE UPLOAD FINISH*/
+
+    /* CHECKBOX START*/
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+        .switch input {
+            display: none;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+        }
+
+    input[type="checkbox"]:checked + input[type="hidden"] + .slider,
+    input[type="checkbox"]:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input[type="checkbox"]:focus + input[type="hidden"] + .slider,
+    input[type="checkbox"]:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input[type="checkbox"]:checked + input[type="hidden"] + .slider:before,
+    input[type="checkbox"]:checked + .slider:before {
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+    /* CHECKBOX FINISH*/
+</style>
+
+<div class="container pb-5">
+    @using (Html.BeginForm("EditUser", "Admin",
+            new {
+                userID=Model.userID,
+                businessCategoryID = Model.businessCategoryID,
+                businessSubategoryID = Model.businessSubategoryID,
+                username = Model.username,
+                password = Model.password,
+                eMail = Model.eMail,
+                name = Model.name,
+                surname = Model.surname,
+                steward = Model.steward,
+                city = Model.city,
+                district = Model.district,
+                birthday = Model.birthday,
+                phone = Model.phone,
+                description = Model.description,
+                score = Model.score,
+                numberOfComments = Model.numberOfComments,
+                numberOfViews = Model.numberOfViews,
+                active = Model.active,
+                gender = Model.gender,
+                experience = Model.experience,
+                admin = Model.admin,
+            },
+            FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4>Kullanıcı Düzenle</h4>
+            <hr />
+            @if (TempData["mesaj"] != null)
+            {
+                <div class="alert alert-warning">
+                    <span class="glyphicon glyphicon-search"></span>
+                    @TempData["mesaj"].ToString()
+                </div>
+            }
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.userID)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.businessCategoryID, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <select id="kategori" class="form-control" name="businessCategoryID">
+                        <option value="0">--- Kategori Seçiniz ---</option>
+                        @foreach (araniyor.Models.businessCategory kategori in ViewBag.Kategori)
+                        {
+                            <option value="@kategori.businessCategoryID">@kategori.businessCategory1</option>
+                        }
+                    </select>
+                    @Html.ValidationMessageFor(model => model.businessCategoryID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.businessSubategoryID, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <select id="altKategori" class="form-control" name="businessSubategoryID">
+                        <option value="0">--- Alt Kategori Seçiniz ---</option>
+                    </select>
+                    @*@Html.DropDownList("businessSubategoryID", null, htmlAttributes: new { @class = "form-control" })*@
+                    @Html.ValidationMessageFor(model => model.businessSubategoryID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.username, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.username, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.username, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.password, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.password, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.eMail, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.eMail, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.eMail, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.surname, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.surname, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.surname, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.steward, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <label class="switch">
+                        @Html.CheckBoxFor(m => m.steward, new { @class = "form-control" })
+                        <div class="slider round">
+                        </div>
+                    </label>
+                    @Html.ValidationMessageFor(model => model.steward, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.picture, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3 center">
+                        <div class="btn-container">
+                            <!--the three icons: default, ok file (img), error file (not an img)-->
+                            <h1 class="imgupload"><i class="fa fa-file-image-o"></i></h1>
+                            <h1 class="imgupload ok"><i class="fa fa-check"></i></h1>
+                            <h1 class="imgupload stop"><i class="fa fa-times"></i></h1>
+                            <!--this field changes dinamically displaying the filename we are trying to upload-->
+                            <p id="namefile">Only pics allowed! (jpg,jpeg,bmp,png)</p>
+                            <!--our custom btn which which stays under the actual one-->
+                            <button type="button" id="btnup" class="btn btn-primary btn-lg">Browse for your pic!</button>
+                            <!--this is the actual file input, is set with opacity=0 beacause we wanna see our custom one-->
+                            <input type="file" value="" name="fileup" id="fileup">
+                            @*@Html.TextBoxFor(model => model.picture, "", new { @type = "file", @name = "fileup", @id = "fileup" })*@
+                        </div>
+                    </div>
+                    @{
+                        if (Model.picture != null)
+                        {
+                            var base64 = Convert.ToBase64String(Model.picture);
+                            var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                            <img src="@imgSrc" style="max-height:310px; " />
+                        }
+                    }
+                    @Html.ActionLink("Resmi Kaldır", "EditUserProfilResmiKaldir", new { id = Model.userID }, htmlAttributes: new { @class = "btn btn-danger", Style= "height:50px; position:relative; " })
+                </div>
+                @*@Html.LabelFor(model => model.picture, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.picture, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.picture, "", new { @class = "text-danger" })
+                    </div>*@
+
+            </div>
+
+
+            @*<div class="form-group">
+                     @Html.LabelFor(model => model.country, htmlAttributes: new { @class = "control-label col-md-2" })
+                     <div class="col-md-10">
+                         @Html.EditorFor(model => model.country, new { htmlAttributes = new { @class = "form-control" } })
+                         @Html.ValidationMessageFor(model => model.country, "", new { @class = "text-danger" })
+                     </div>
+                 </div>
+
+                <div class="form-group">
+                     @Html.LabelFor(model => model.city, htmlAttributes: new { @class = "control-label col-md-2" })
+                     <div class="col-md-10">
+                         @Html.EditorFor(model => model.city, new { htmlAttributes = new { @class = "form-control" } })
+                         @Html.ValidationMessageFor(model => model.city, "", new { @class = "text-danger" })
+                     </div>
+                 </div>
+
+                 <div class="form-group">
+                     @Html.LabelFor(model => model.district, htmlAttributes: new { @class = "control-label col-md-2" })
+                     <div class="col-md-10">
+                         @Html.EditorFor(model => model.district, new { htmlAttributes = new { @class = "form-control" } })
+                         @Html.ValidationMessageFor(model => model.district, "", new { @class = "text-danger" })
+                     </div>
+                 </div>*@
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.city, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <select id="il" class="form-control" name="city">
+                        <option value="">--- Şehir Seçiniz ---</option>
+                        @foreach (araniyor.Models.City il in ViewBag.Sehir)
+                        {
+                            <option value="@il.ID">@il.City1</option>
+                        }
+                    </select>
+                    @Html.ValidationMessageFor(model => model.city, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.district, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <select id="ilçe" class="form-control" name="district">
+                        <option value="">--- İlçe Seçiniz ---</option>
+                    </select>
+                    @Html.ValidationMessageFor(model => model.district, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.birthday, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.birthday, new { htmlAttributes = new { @class = "datepicker" } })
+                    @Html.ValidationMessageFor(model => model.birthday, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.phone, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.phone, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.phone, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.description, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextAreaFor(model => model.description, 10, 121, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.description, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            @*<div class="form-group">
+                    @Html.LabelFor(model => model.votingNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.votingNumber, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.votingNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.totalScore, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.totalScore, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.totalScore, "", new { @class = "text-danger" })
+                    </div>
+                </div>*@
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.score, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.score, new { htmlAttributes = new { @class = "form-control", @min = "0", @max = "5" } })
+                    @Html.ValidationMessageFor(model => model.score, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.numberOfComments, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.numberOfComments, new { htmlAttributes = new { @class = "form-control", @min = "0" } })
+                    @Html.ValidationMessageFor(model => model.numberOfComments, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.numberOfViews, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.numberOfViews, new { htmlAttributes = new { @class = "form-control", @min = "0" } })
+                    @Html.ValidationMessageFor(model => model.numberOfViews, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.active, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <label class="switch">
+                        @Html.CheckBoxFor(m => m.active, new { @class = "form-control" })
+                        <div class="slider round">
+                        </div>
+                    </label>
+                    @Html.ValidationMessageFor(model => model.active, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.gender, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="editor-field">
+                        @Html.RadioButtonFor(x => x.gender, "Erkek") Erkek
+                        @Html.RadioButtonFor(x => x.gender, "Kadın") Kadın
+                    </div>
+                    @Html.ValidationMessageFor(model => model.gender, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.admin, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <label class="switch">
+                        @Html.CheckBoxFor(m => m.admin, new { @class = "form-control" })
+                        <div class="slider round">
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.experience, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.experience, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.experience, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Kaydet" class="btn btn-success" />
+                    @Html.ActionLink("Geri Dön", "ListUser", null, new { @class = "btn btn-warning" })
+                </div>
+            </div>
+        </div>
+                        }
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <script type="text/javascript">
+        $('#fileup').change(function () {
+            //here we take the file extension and set an array of valid extensions
+            var res = $('#fileup').val();
+            var arr = res.split("\\");
+            var filename = arr.slice(-1)[0];
+            filextension = filename.split(".");
+            filext = "." + filextension.slice(-1)[0];
+            valid = [".jpg", ".png", ".jpeg", ".bmp"];
+            //if file is not valid we show the error icon, the red alert, and hide the submit button
+            if (valid.indexOf(filext.toLowerCase()) == -1) {
+                $(".imgupload").hide("slow");
+                $(".imgupload.ok").hide("slow");
+                $(".imgupload.stop").show("slow");
+
+                $('#namefile').css({ "color": "red", "font-weight": 700 });
+                $('#namefile').html("File " + filename + " is not  pic!");
+
+                $("#submitbtn").hide();
+                $("#fakebtn").show();
+            } else {
+                //if file is valid we show the green alert and show the valid submit
+                $(".imgupload").hide("slow");
+                $(".imgupload.stop").hide("slow");
+                $(".imgupload.ok").show("slow");
+
+                $('#namefile').css({ "color": "green", "font-weight": 700 });
+                $('#namefile').html(filename);
+
+                $("#submitbtn").show();
+                $("#fakebtn").hide();
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#IsEnabled").change(function () {
+                if ($("#IsEnabled").is(":checked")) {
+                    $("form").submit();
+                }
+            });
+        });
+    </script>
+
+
+
+
+    <script>
+        $(document).ready(function () {
+
+            $.kategoriId = $("#kategori").val();
+            GetirAltKetegori($.kategoriId);
+
+            $(document.body).delegate('#kategori', 'change', function () {
+                $("#altKategori").empty();
+                $.kategoriId = $(this).val();
+                GetirAltKetegori($.kategoriId);
+            });
+
+        });
+
+        function GetirAltKetegori(kategoriId) {
+            $.post(
+            "/Admin/GetirKategori",
+        { kategoriId: kategoriId },
+        function (data) {
+            $.each(data, function (index, altKategori) {
+                $("#altKategori").append("<option value=" + altKategori.Id + ">" + altKategori.Ad + "</option>");
+            });
+        },
+    "json"
+    );
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+            $.ilId = $("#il").val();
+            GetirIlce($.ilId);
+
+            $(document.body).delegate('#il', 'change', function () {
+                $("#ilçe").empty();
+                $.ilId = $(this).val();
+                GetirIlce($.ilId);
+            });
+
+        });
+
+        function GetirIlce(ilId) {
+            $.post(
+            "/Admin/GetirIlceler",
+        { ilId: ilId },
+        function (data) {
+            $.each(data, function (index, ilce) {
+                $("#ilçe").append("<option value=" + ilce.Id + ">" + ilce.Ad + "</option>");
+            });
+        },
+    "json"
+    );
+        }
+    </script>

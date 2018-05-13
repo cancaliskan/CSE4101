@@ -1,0 +1,44 @@
+﻿@model araniyor.Models.blocked
+
+@{
+    ViewBag.Title = "DetailsBlocked";
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+}
+
+
+<div class="container pb-5">
+    <div>
+        <h4>Kayıt Detayı</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Users.username)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Users.username)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Users1.username)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Users1.username)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.date)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.date)
+            </dd>
+
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Düzenle", "EditBlocked", new { id = Model.blockID }, new { @class = "btn btn-primary" }) 
+        @Html.ActionLink("Geri Dön", "ListBlocked", null, new { @class = "btn btn-warning" })
+    </p>
+</div>
