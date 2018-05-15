@@ -1,0 +1,46 @@
+﻿@model IEnumerable<araniyor.Models.ProfilGoruntuleme>
+
+@{
+    ViewBag.Title = "ListProfilGoruntuleme";
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+}
+
+<h2>Profil Görüntüleme Listesi</h2>
+<hr />
+<p>
+    @Html.ActionLink("Kayıt Oluştur", "CreateProfilGoruntuleme", null, new { @class = "btn btn-primary btn" })
+</p>
+<div class="panel panel-primary filterable" style="overflow-x: auto;">
+
+    <table class="table table-bordered table-striped">
+        <div class="panel-heading">
+            <thead>
+                <tr class="filters">
+                    <th style="width:auto"><input type="text" class="form-control" placeholder="Görüntüleyen"></th>
+                    <th style="width:auto"><input type="text" class="form-control" placeholder="Görüntülenen"></th>
+                    <th style="width:auto"><input type="text" class="form-control" placeholder="Tarih"></th>
+                    <th style="width:auto"></th>
+                </tr>
+            </thead>
+        </div>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.goruntuleyen)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.goruntulenen)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Tarih)
+                </td>
+                <td>
+                    @*@Html.ActionLink("Düzenle", "EditProfilGoruntuleme", new { id = item.ID }, new { @class = "btn btn-warning btn-sm" })*@
+                    @Html.ActionLink("Detay", "DetailsProfilGoruntuleme", new { id = item.ID }, new { @class = "btn btn-primary btn-sm" })
+                    @Html.ActionLink("Sil", "DeleteProfilGoruntuleme", new { id = item.ID }, new { @class = "btn btn-danger btn-sm" })
+                </td>
+            </tr>
+        }
+
+    </table>

@@ -1,0 +1,49 @@
+﻿@if (ViewBag.userList1.Count > 0)
+{
+    string base64 = null, resim = null;
+
+    foreach (var user in ViewBag.userList1)
+    {
+        if (user.picture != null)
+        {
+            base64 = Convert.ToBase64String(user.picture);
+            resim = String.Format("data:image/gif;base64,{0}", base64);
+        }
+        <div class="col-md-4">
+            <div class="card mt-2">
+                <div class="search-row-wrapper" style="background-image:url(@resim);">
+                    @*<img class="img-fluid rounded" src="@imgSrc" alt="@user.name">*@
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <a href="/Home/KullaniciDetayi/@user.userID"> @user.name @user.surname</a>
+                    </h4>
+                    <p class="card-text">
+                        @user.description
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">
+                        @{
+                            if (user.score != null)
+                            {
+                                if (user.score.ToString().Length > 2)
+                                {
+                                    <span class="badge badge-success">@user.score.ToString().Substring(0, 3) </span> <b> @user.numberOfComments Yorum Üzerinden</b>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-success">@user.score.ToString() </span> <b> @user.numberOfComments Yorum Üzerinden</b>
+                                }
+                            }
+                        }
+                    </small>
+                </div>
+            </div>
+        </div>
+                                }
+                            }
+                            else
+                            {
+                                <span style="font-size:25px; margin:auto auto auto auto; text-align:center; color:rgba(44, 62, 80, 1.0);">Üzgünüz kayıt bulunamadı...</span>
+                            }

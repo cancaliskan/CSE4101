@@ -1,0 +1,36 @@
+﻿@model araniyor.Models.businessSubategory
+
+@{
+    ViewBag.Title = "DetailsSubBusinessCategory";
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+}
+
+
+<div class="container pb-5">
+    <div>
+        <h4>Alt Kategori</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.businessCategory.businessCategory1)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.businessCategory.businessCategory1)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.businessSubategory1)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.businessSubategory1)
+            </dd>
+
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Düzenle", "EditSubBusinessCategory", new { id = Model.businessSubategoryID }, new { @class = "btn btn-primary btn" })
+        @Html.ActionLink("Geri Dön", "ListSubBusinessCategory", null, new { @class = "btn btn-warning" })
+    </p>
+</div>

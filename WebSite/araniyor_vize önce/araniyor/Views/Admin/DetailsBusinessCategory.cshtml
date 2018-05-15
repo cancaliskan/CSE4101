@@ -1,0 +1,41 @@
+﻿@model araniyor.Models.businessCategory
+
+@{
+    ViewBag.Title = "DetailsBusinessCategory";
+    Layout = "~/Views/Shared/_LayoutAdminPanel.cshtml";
+}
+
+
+
+<div class="container pb-5">
+    <div>
+        <h4>Kategori Detayı</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.businessCategory1)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.businessCategory1)
+            </dd>
+
+            <dt>
+                İlgili Kategoriler
+            </dt>
+
+            @{
+                <ul>
+                    @foreach (var item in ViewBag.AltKategoriler)
+                    {
+                        <li> @item.businessSubategory1</li>
+                    }
+                </ul>
+            }
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Düzenle", "EditBusinessCategory", new { id = Model.businessCategoryID }, new { @class = "btn btn-primary btn" })
+        @Html.ActionLink("Geri Dön", "ListBusinessCategory", null, new { @class = "btn btn-warning" })
+    </p>
+</div>

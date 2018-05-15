@@ -1,0 +1,302 @@
+﻿
+@{
+    ViewBag.Title = "Mesajlasma";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+@*<script src="~/scripts/jquery-1.10.2.js"></script>*@
+<script src="~/scripts/jquery.signalR-2.2.3.js"></script>
+<script src="~/signalr/hubs"></script>
+
+@section scripts{
+
+    @*<script type="text/javascript" src="~/Scripts/jquery-1.10.2.js"></script>*@
+    <script src="~/scripts/jquery.signalR-2.2.3.js"></script>
+    <script src="~/signalr/hubs"></script>
+    @if (ViewBag.receiverUser != null)
+    {
+        <script type="text/javascript">
+            $(function () {
+                var chatHub = $.connection.ds; // bir tane connection oluşturuyoruz ve bu connection ı kullanarak server side tarafındaki hub classında türemiş ChatHub classımızın içindeki fonksiyonları tetikleyebiliyoruz. ds ChatHub sınıfına verilmiş HubName dir. Sınıfın kendi adıda kullanılabilir ama küçük harf kullanılmalıdır.
+
+                chatHub.client.sendMessageToPage = function (sendName, receiveName, message) { // server side tarafından client tarafta tetiklenmesi gereken fonksiyonu tanımlıyoruz.
+                    var _sendUser = "@ViewBag.senderUser.userID";
+                    var _receiveUser = "@ViewBag.receiverUser.userID";
+
+                    //console.log(_sendUser, "Hello, world!");
+                    //Gönderen ve alan kullanıcıların birbirleriyle eşleşmeleri kontrol ediliyor.
+                    var date = new Date();
+                    var dd = date.getDate();
+                    var mm = date.getMonth() + 1; //January is 0!
+                    var yyyy = date.getFullYear();
+                    var hours = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
+                    var am_pm = date.getHours() >= 12 ? "PM" : "AM";
+                    hours = hours < 10 ? "0" + hours : hours;
+                    var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+                    var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+                    time = hours + ":" + minutes + ":" + seconds + " " + am_pm;
+
+                    var _users = [_sendUser, _receiveUser];
+                    if ($.inArray(sendName, _users) != -1 && $.inArray(receiveName, _users) != -1) {
+                        if (sendName == _sendUser) {
+                            if ("@ViewBag.senderUser.picture" != null) {
+                                var resim = "@String.Format("data:image/gif;base64,{0}", ViewBag.base64ResimSender)";
+                            }
+                            $("#lAllMessage").append("<div class='alert alert-success' style='text-align:right;'>" +
+                                            "<div class='row'>" +
+                                                "<div class='col-md-10'>" +
+                                                     "<strong>" + "@ViewBag.senderUser.name" + " " + "@ViewBag.senderUser.surname" + "</strong> <br />" +
+                                                    message +
+                                                "</div>" +
+                                                "<div class='col-md-2'>" +
+                                                    "<img src=" + resim + " class='img-responsive rounded' style='height:50px'>" +
+                                                "</div>" +
+                                            "</div>" +
+                                        "</div>");
+                        }
+                        else {
+                            if ("@ViewBag.receiverUser.picture" != null) {
+                                var resim = "@String.Format("data:image/gif;base64,{0}", ViewBag.base64ResimReceiver)";
+                            }
+                            $("#lAllMessage").append("<div class='alert alert-info' style='text-align:left;'>"
+                                            + "<div class='row'>"
+                                                + "<div class='col-md-2'>"
+                                                    + "<img src=" + resim + " class='img-responsive rounded' style='height:50px; float:left;'>"
+                                                + "</div>"
+                                                + "<div class='col-md-10'>"
+                                                   + "<strong>" +
+                                                   "<a target='_blank' href='/Home/KullaniciDetayi/@ViewBag.receiverUser.userID' style='color:black'>"
+                                                   + "@ViewBag.receiverUser.name" + " " + "@ViewBag.receiverUser.surname" + "</a></strong> <br />" +
+                                                    message +
+                                                "</div>" +
+                                            "</div>"
+                                        + "</div>");
+                        }
+                    }
+                };
+
+                function HubSendMessage(chatHub, sendName, receiveName, message) {
+                    chatHub.server.sendMessage(sendName, receiveName, message); // Server side tarafındaki fonksiyonu tetikliyoruz.
+                }
+
+                $("#iTMessage").focus();
+
+                $.connection.hub.start().done(function () { // Hub sınıfından türetilmiş ChatHub sınıfına bağlanılan kısımdır.
+                    $("#iBSend").on("click", function () {
+                        var sendName = "@ViewBag.senderUser.userID";
+                        var receiveName = "@ViewBag.receiverUser.userID";
+                        var message = $('#iTMessage').val();
+                        HubSendMessage(chatHub, sendName, receiveName, message);
+                        $("#iTMessage").val("").focus();
+
+                    });
+                });
+            });
+
+        </script>
+    }
+}
+<style>
+    .pname {
+        color: rgba(44, 62, 80, 1.0);
+    }
+
+    .chatperson {
+        display: block;
+        border-bottom: 1px solid #eee;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        overflow: hidden;
+        margin-bottom: 15px;
+        padding: 4px;
+    }
+
+        .chatperson:hover {
+            text-decoration: none;
+            border-bottom: 1px solid orange;
+        }
+
+    .namechat {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .chatperson .chatimg img {
+        width: 40px;
+        height: 40px;
+        /*background-image: url('http://i.imgur.com/JqEuJ6t.png');*/
+    }
+
+    .chatperson .pname {
+        font-size: 18px;
+        padding-left: 5px;
+    }
+
+    .chatperson .lastmsg {
+        font-size: 12px;
+        padding-left: 5px;
+        color: #ccc;
+    }
+</style>
+
+
+@*<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>*@
+<!------ Include the above in your HEAD tag ---------->
+<div class="container pt-5 mt-5">
+    <div class="container mt-2">
+        <div class="row">
+            <div class="col-md-4">
+                <div style="overflow-y: auto; height:600px;">
+                    @{string base64 = null, resim = null; }
+                    @foreach (var user in ViewBag.Kisiler)
+                    {
+                        if (user.picture != null)
+                        {
+                            base64 = Convert.ToBase64String(user.picture);
+                            resim = String.Format("data:image/gif;base64,{0}", base64);
+                        }
+                        <a href="?receiverID=@user.userID" class="chatperson">
+                            <span class="chatimg">
+                                <img src=@resim alt="" />
+                            </span>
+                            <div class="namechat">
+                                <div class="pname">
+                                    @user.name
+                                    @foreach (var mesaj in ViewBag.solMenuMesajlar)
+                                    {
+                                        if (mesaj.isRead == false && mesaj.senderID == user.userID && mesaj.receiverID == Convert.ToInt32(Session["userID"].ToString()))
+                                        {
+                                            <i class="far fa-dot-circle" style="color:red"></i>
+                                        }
+                                    }
+                                </div>
+                                @*<div class="lastmsg">sdk nskdfjnlssdf sdf ss fsdaf kjlsadjf nkksaddbhk jasddl sdf kjsdfoashf89f sdbfoi nkksaddbhk jasddl</div>*@
+                            </div>
+                        </a>
+                    }
+
+                </div>
+            </div>
+            <div class="col-md-8">
+                @if (ViewBag.ilkYüklenme == false)
+                {
+                    <div class="chatbody" style="overflow-y:auto; height:440px;">
+                        <div id="lAllMessage">
+                            @foreach (var mesaj in ViewBag.mesajlar)
+                            {
+                                if (mesaj.senderID == Convert.ToInt32(Session["userID"].ToString()))
+                                {
+                                    if (ViewBag.senderUser.picture != null)
+                                    {
+                                        base64 = Convert.ToBase64String(ViewBag.senderUser.picture);
+                                        resim = String.Format("data:image/gif;base64,{0}", base64);
+                                    }
+                                    <div class="alert alert-success" style="text-align:right;">
+                                        <div class="row">
+                                            <div class="col-md-10">
+                                                <strong> @ViewBag.senderUser.name @ViewBag.senderUser.surname </strong> <br />
+                                                @mesaj.message
+                                            </div>
+                                            <div class="col-md-2">
+                                                <img src=@resim class="img-responsive rounded" style="height:50px">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                }
+                                else if (mesaj.receiverID == Convert.ToInt32(Session["userID"].ToString()))
+                                {
+                                    if (ViewBag.receiverUser.picture != null)
+                                    {
+                                        base64 = Convert.ToBase64String(ViewBag.receiverUser.picture);
+                                        resim = String.Format("data:image/gif;base64,{0}", base64);
+                                    }
+                                    <div class="alert alert-info" style="text-align:left;">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <img src=@resim class="img-responsive rounded" style="height:50px; float:left;">
+                                            </div>
+                                            <div class="col-md-10">
+                                                <strong><a target="_blank" href="~/Home/KullaniciDetayi/@ViewBag.receiverUser.userID" style="color:black"> @ViewBag.receiverUser.name @ViewBag.receiverUser.surname </a></strong> <br />
+                                                @mesaj.message
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                    if (Session["userID"] != null && ViewBag.receiverUser != null)
+                    {
+                        if (@ViewBag.receiverUser.userID != Convert.ToInt32(Session["userID"].ToString()))
+                        {
+                            var tempBool = false;
+                            var tempBool2 = false;
+                            foreach (var item in ViewBag.blockList)
+                            {
+                                if (item.blockerID == ViewBag.receiverUser.userID && item.blockedID == Convert.ToInt32(Session["userID"].ToString()))
+                                {
+                                    tempBool = true;
+                                }
+                                if (item.blockerID == Convert.ToInt32(Session["userID"].ToString()) && item.blockedID == ViewBag.receiverUser.userID)
+                                {
+                                    tempBool2 = true;
+                                }
+                            }
+                            if (tempBool == false)
+                            {
+                                if (tempBool2 == false)
+                                {
+
+                                    <div class="row" style="height:200px; margin-top:20px;">
+                                        <div class="col-md-10">
+                                            <textarea class="form-control" rows="5" id="iTMessage" placeholder="Mesaj metni" style="width:100%; overflow-y:auto;resize:none;"></textarea>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input id="iBSend" class="btn btn-info btn-block" value="Gönder" />
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <script type="text/javascript">
+                                        alert("Kullanıcıya mesaj göndermek için engeli kaldırmalısınız.!");
+                                    </script>
+                                }
+                            }
+                            else
+                            {
+                                <script type="text/javascript">
+                                    alert("Kullanıcı sizi engellediği için mesaj yollayamazsınız.!");
+                                </script>
+                            }
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@if (ViewBag.ilkYüklenme == false)
+{
+    <script type="text/javascript">
+        $('#iBSend').click(function () {
+            // Call AJAX here
+            $.ajax({
+                method: "POST",
+                url: "/Home/mesajGonder", // Your URL here
+                dataType: 'json',
+                data: {
+                    'mesaj': $("#iTMessage").val(),
+                    'receiverID': "@ViewBag.receiverUser.userID",
+                    'senderID': "@Session["userID"]",
+                }
+                //success: function (data) {
+                //   // window.location.href = data;
+                //}
+            });
+        });
+    </script>
+}

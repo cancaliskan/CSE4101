@@ -1,0 +1,741 @@
+﻿@model araniyor.Models.AboutUs
+
+@{
+    ViewBag.Title = "KullaniciDetayi";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+@{
+    string base64 = null, resim = null;
+    if (ViewBag.User.picture != null)
+    {
+        base64 = Convert.ToBase64String(ViewBag.User.picture);
+        resim = String.Format("data:image/gif;base64,{0}", base64);
+    }
+}
+<style type="text/css">
+    .panel-shadow {
+        box-shadow: rgba(0, 0, 0, 0.3) 7px 7px 7px;
+    }
+
+    .panel-white {
+        border: 1px solid #dddddd;
+    }
+
+        .panel-white .panel-heading {
+            color: #333;
+            background-color: #fff;
+            border-color: #ddd;
+        }
+
+        .panel-white .panel-footer {
+            background-color: #fff;
+            border-color: #ddd;
+        }
+
+    .post .post-heading {
+        height: 95px;
+        padding: 20px 15px;
+    }
+
+        .post .post-heading .avatar {
+            width: 60px;
+            height: 60px;
+            display: block;
+            margin-right: 15px;
+        }
+
+        .post .post-heading .meta .title {
+            margin-bottom: 0;
+        }
+
+            .post .post-heading .meta .title a {
+                color: black;
+            }
+
+                .post .post-heading .meta .title a:hover {
+                    color: #aaaaaa;
+                }
+
+        .post .post-heading .meta .time {
+            margin-top: 8px;
+            color: #999;
+        }
+
+    .post .post-image .image {
+        width: 100%;
+        height: auto;
+    }
+
+    .post .post-description {
+        padding: 15px;
+    }
+
+        .post .post-description p {
+            font-size: 14px;
+        }
+
+        .post .post-description .stats {
+            margin-top: 20px;
+        }
+
+            .post .post-description .stats .stat-item {
+                display: inline-block;
+                margin-right: 15px;
+            }
+
+                .post .post-description .stats .stat-item .icon {
+                    margin-right: 8px;
+                }
+
+    .post .post-footer {
+        border-top: 1px solid #ddd;
+        padding: 15px;
+    }
+
+        .post .post-footer .input-group-addon a {
+            color: #454545;
+        }
+
+        .post .post-footer .comments-list {
+            padding: 0;
+            margin-top: 20px;
+            list-style-type: none;
+        }
+
+            .post .post-footer .comments-list .comment {
+                display: block;
+                width: 100%;
+                margin: 20px 0;
+            }
+
+                .post .post-footer .comments-list .comment .avatar {
+                    width: 35px;
+                    height: 35px;
+                }
+
+                .post .post-footer .comments-list .comment .comment-heading {
+                    display: block;
+                    width: 100%;
+                }
+
+                    .post .post-footer .comments-list .comment .comment-heading .user {
+                        font-size: 14px;
+                        font-weight: bold;
+                        display: inline;
+                        margin-top: 0;
+                        margin-right: 10px;
+                    }
+
+                    .post .post-footer .comments-list .comment .comment-heading .time {
+                        font-size: 12px;
+                        color: #aaa;
+                        margin-top: 0;
+                        display: inline;
+                    }
+
+                .post .post-footer .comments-list .comment .comment-body {
+                    margin-left: 50px;
+                }
+
+                .post .post-footer .comments-list .comment > .comments-list {
+                    margin-left: 50px;
+                }
+</style>
+
+
+<style type="text/css">
+    import url(http://fonts.googleapis.com/css?family=Roboto);
+    /****** LOGIN MODAL ******/
+    .loginmodal-container {
+        padding: 30px;
+        max-width: 350px;
+        width: 100% !important;
+        background-color: #F7F7F7;
+        margin: 0 auto;
+        border-radius: 2px;
+        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        font-family: roboto;
+    }
+
+    .loginmodal-container h1 {
+        text-align: center;
+        font-size: 1.8em;
+        font-family: roboto;
+    }
+
+    .loginmodal-container input[type=submit] {
+        width: 100%;
+        display: block;
+        margin-bottom: 10px;
+        position: relative;
+    }
+
+    .loginmodal-container input[type=text], input[type=password] {
+        height: 44px;
+        font-size: 16px;
+        width: 100%;
+        margin-bottom: 10px;
+        -webkit-appearance: none;
+        background: #fff;
+        border: 1px solid #d9d9d9;
+        border-top: 1px solid #c0c0c0;
+        /* border-radius: 2px; */
+        padding: 0 8px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+    }
+
+        .loginmodal-container input[type=text]:hover, input[type=password]:hover {
+            border: 1px solid #b9b9b9;
+            border-top: 1px solid #a0a0a0;
+            -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+            -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+    .loginmodal {
+        text-align: center;
+        font-size: 14px;
+        font-family: 'Arial', sans-serif;
+        font-weight: 700;
+        height: 36px;
+        padding: 0 8px;
+        /* border-radius: 3px; */
+        /* -webkit-user-select: none;
+    user-select: none; */
+    }
+
+    .loginmodal-submit {
+        /* border: 1px solid #3079ed; */
+        border: 0px;
+        color: #fff;
+        text-shadow: 0 1px rgba(0,0,0,0.1);
+        background-color: #4d90fe;
+        padding: 17px 0px;
+        font-family: roboto;
+        font-size: 14px;
+        /* background-image: -webkit-gradient(linear, 0 0, 0 100%,   from(#4d90fe), to(#4787ed)); */
+    }
+
+        .loginmodal-submit:hover {
+            /* border: 1px solid #2f5bb7; */
+            border: 0px;
+            text-shadow: 0 1px rgba(0,0,0,0.3);
+            background-color: #357ae8;
+            /* background-image: -webkit-gradient(linear, 0 0, 0 100%,   from(#4d90fe), to(#357ae8)); */
+        }
+
+    .loginmodal-container a {
+        text-decoration: none;
+        color: #666;
+        font-weight: 400;
+        text-align: center;
+        display: inline-block;
+        opacity: 0.6;
+        transition: opacity ease 0.5s;
+    }
+
+    .login-help {
+        font-size: 12px;
+    }
+</style>
+
+<div class="container pt-5 pb-5 mt-5 mb-5">
+    @if (@ViewBag.User.steward == true)
+    {
+        <div class="row">
+            <div class="col-md-3" style="display:flex; align-items:center; justify-content:center;">
+                <img src=@resim class="img-fluid rounded">
+            </div>
+
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1>@ViewBag.User.name @ViewBag.User.surname #@ViewBag.User.userID</h1>
+                    </div>
+
+                    @*<div class="col-md-12">
+                            <span class="badge badge-success"> Aktif </span>
+                        </div>*@
+
+                    <div class="col-md-12">
+                        <div id="description">
+                            @{
+                                if (ViewBag.User.description.Length > 200)
+                                {
+                            <p>@ViewBag.User.description.Substring(0, 147)...</p>
+                                }
+                                else
+                                {
+                            <p>@ViewBag.User.description</p>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        @*<i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fas fa-star-half" aria-hidden="true"></i>*@
+                        @{
+                            if (@ViewBag.User.score != null)
+                            {
+                                if (@ViewBag.User.score.ToString().Length > 2)
+                                {
+                                    <span class="badge badge-success">@ViewBag.User.score.ToString().Substring(0, 3) </span> <b> @ViewBag.User.numberOfComments Yorum Üzerinden</b>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-success">@ViewBag.User.score.ToString() </span> <b> @ViewBag.User.numberOfComments Yorum Üzerinden</b>
+                                }
+                            }
+                        }
+                    </div>
+                    <div class="col-md-12 mt-3">
+                        <h4 id="tecrube">@ViewBag.User.experience Yıllık Tecrübe</h4>
+                    </div>
+                    <div class="col-md-12 mt-3">
+                        @if (Session["userID"] != null)
+                        {
+                            if (@ViewBag.User.userID != Convert.ToInt32(Session["userID"].ToString()))
+                            {
+                                var tempBool = false;
+                                foreach (var item in ViewBag.blockList)
+                                {
+                                    if (item.blockerID == Convert.ToInt32(Session["userID"].ToString()) && item.blockedID == ViewBag.User.userID)
+                                    {
+                                        tempBool = true;
+                                    }
+                                }
+                                if (tempBool == false)
+                                {
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                                        <i class="fas fa-comments"></i>
+                                        Yorum Yap
+                                    </button>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#mesajAtModal">
+                                        <i class="fas fa-envelope"></i>
+                                        Mesaj At!
+                                    </button>
+
+                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#kullaniciEngelle">Kullanıcıyı Engelle</button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#kullaniciEngelKaldir">Engeli Kaldır</button>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="bd-example bd-example-tabs">
+                    <ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="pills-description-tab" data-toggle="pill" href="#pills-description" role="tab" aria-controls="pills-description" aria-expanded="true" style="color:#495057">Detaylı Bilgi</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pills-payment-tab" data-toggle="pill" href="#pills-payment" role="tab" aria-controls="pills-payment" aria-expanded="true" style="color:#495057">Yorumlar</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pills-description" role="tabpanel" aria-labelledby="pills-description-tab">
+                            <span style="font-size:12px; font-weight:bold;"> Detaylı Bilgi;</span>
+                            <p>@ViewBag.User.description</p>
+                            <p>
+                                <span style="font-size:12px; font-weight:bold;"> Şehir;</span>
+                                @ViewBag.sehir
+                            </p>
+                            <p>
+                                <span style="font-size:12px; font-weight:bold;"> İlçe;</span>
+                                @ViewBag.ilce
+                            </p>
+                            <p>
+                                <span style="font-size:12px; font-weight:bold;"> Cinsiyet;</span>
+                                @ViewBag.User.gender
+                            </p>
+                            <p>
+                                <span style="font-size:12px; font-weight:bold;"> Deneyim (Yıl);</span>
+                                @ViewBag.User.experience
+                            </p>
+                            <p>
+                                <span style="font-size:12px; font-weight:bold;">Doğum Tarihi;</span>
+                                @ViewBag.User.birthday.Date
+                            </p>
+                        </div>
+                        <div class="tab-pane fade" id="pills-payment" role="tabpanel" aria-labelledby="pills-payment-tab">
+                            @{
+                                if (ViewBag.KullaniciYorumlari != null)
+                                {
+                                    for (int i = 0; i < ViewBag.KullaniciYorumlari.Count; i++)
+                                    {
+                                        for (int k = 0; k < ViewBag.Kullanicilar.Count; k++)
+                                        {
+                                            if (ViewBag.KullaniciYorumlari[i].yorumYapilan == ViewBag.User.userID
+                                                && ViewBag.KullaniciYorumlari[i].yorumYapan == ViewBag.Kullanicilar[k].userID)
+                                            {
+                                                string base64_ = null, resim_ = null;
+                                                if (ViewBag.Kullanicilar[k].picture != null)
+                                                {
+                                                    base64_ = Convert.ToBase64String(ViewBag.Kullanicilar[k].picture);
+                                                    resim_ = String.Format("data:image/gif;base64,{0}", base64);
+                                                }
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="panel panel-white post panel-shadow">
+                                                            <div class="post-heading">
+                                                                <div class="pull-left image">
+                                                                    <img src=@resim_ class="img-circle avatar" alt="user profile image">
+                                                                </div>
+                                                                <div class="pull-left meta">
+                                                                    <div class="title h5">
+                                                                        <b>@ViewBag.Kullanicilar[k].name @ViewBag.Kullanicilar[k].surname</b>
+                                                                        <br />
+                                                                        <span style="font-size:12px"> @ViewBag.KullaniciYorumlari[i].yorumTarihi</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="post-description">
+                                                                <p>@ViewBag.KullaniciYorumlari[i].yorumMetni</p>
+                                                                @*<div class="stats">
+                                                                        <a href="#" class="btn btn-default stat-item">
+                                                                            <i class="fa fa-thumbs-up icon"></i>2
+                                                                        </a>
+                                                                        <a href="#" class="btn btn-default stat-item">
+                                                                            <i class="fa fa-thumbs-down icon"></i>12
+                                                                        </a>
+                                                                    </div>*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                                }
+                                else
+                                {
+                                    <div class="row">
+                                        <div class="col-md-3" style="display:flex; align-items:center; justify-content:center;">
+                                            <img src=@resim class="img-fluid rounded" style="height:400px;">
+
+                                        </div>
+
+                                        <div class="col-md-9">
+                                            <div class="row">
+                                                <div class="col-md-12" style="font-size:20px;">
+                                                    <p>
+                                                        <span style=" font-weight:bold;"> Isim;</span>
+                                                        @ViewBag.User.name
+                                                    </p>
+                                                    <p>
+                                                        <span style=" font-weight:bold;"> Soyisim;</span>
+                                                        @ViewBag.User.surname
+                                                    </p>
+                                                    <p>
+                                                        <span style=" font-weight:bold;">E-Posta;</span>
+                                                        @ViewBag.User.eMail
+                                                    </p>
+                                                    <p>
+                                                       @if (Session["userID"] != null)
+                                                       {
+                                                           if (@ViewBag.User.userID != Convert.ToInt32(Session["userID"].ToString()))
+                                                           {
+                                                               var tempBool = false;
+                                                               foreach (var item in ViewBag.blockList)
+                                                               {
+                                                                   if (item.blockerID == Convert.ToInt32(Session["userID"].ToString()) && item.blockedID == ViewBag.User.userID)
+                                                                   {
+                                                                       tempBool = true;
+                                                                   }
+                                                               }
+                                                               if (tempBool == false)
+                                                               {
+                                                               <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#kullaniciEngelle">Kullanıcıyı Engelle</button>
+                                                               }
+                                                               else
+                                                               {
+                                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#kullaniciEngelKaldir">Engeli Kaldır</button>
+                                                               }
+                                                           }
+                                                       }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                }
+
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        @if (Session["userID"] != null)
+        {
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">@ViewBag.User.name için yorum yap</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <b>Yorum: </b>
+                        <br />
+                        <textarea id="yorum" rows="4" cols="50"></textarea>
+                        <br />
+                        <b>Puan: </b>
+                        @Html.DropDownList("MySkills", new List<SelectListItem>
+                    {
+                       new SelectListItem{ Text="1", Value = "1" },
+                       new SelectListItem{ Text="2", Value = "2" },
+                       new SelectListItem{ Text="3", Value = "3" },
+                       new SelectListItem{ Text="4", Value = "4" },
+                       new SelectListItem{ Text="5", Value = "5" }
+                    }, new { @id = "puanDropDown" })
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Geri</button>
+                        <button id="yorumYapButon" type="button" class="btn btn-primary">Yorum Yap</button>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            @*<div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Giriş Yap</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">E-Posta Adresi</label>
+                            <input type="email" class="form-control" placeholder="E-Posta" id="eposta">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Parola</label>
+                            <input type="password" class="form-control" placeholder="Parola" id="password">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="login-help">
+                            <a href="#" data-toggle="modal" data-target="#uyeOl" style="color:rgba(44, 62, 80, 1.0)">Üye Ol</a> - <a href="#" style="color:rgba(44, 62, 80, 1.0)">Şifremi Unuttum</a>
+                        </div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Geri</button>
+                        <button id="girisYapButon" type="button" class="btn btn-primary">Giriş Yap</button>
+                    </div>
+                </div>
+            </div>*@
+        }
+    </div>
+
+    <div class="modal fade" id="mesajAtModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        @if (Session["userID"] != null)
+        {
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">@ViewBag.User.name Mesaj Gönder</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <b>Mesaj: </b>
+                        <br />
+                        <textarea id="mesajMetni" rows="4" cols="50"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Geri</button>
+                        <button id="mesajAtButon" type="button" class="btn btn-primary">Gönder</button>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            @*<div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Giriş Yap</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">E-Posta Adresi</label>
+                            <input type="email" class="form-control" placeholder="E-Posta" id="eposta">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Parola</label>
+                            <input type="password" class="form-control" placeholder="Parola" id="password">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="login-help">
+                            <a href="#" data-toggle="modal" data-target="#uyeOl" style="color:rgba(44, 62, 80, 1.0)">Üye Ol</a> - <a href="#" style="color:rgba(44, 62, 80, 1.0)">Şifremi Unuttum</a>
+                        </div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Geri</button>
+                        <button id="girisYapButon" type="button" class="btn btn-primary">Giriş Yap</button>
+                    </div>
+                </div>
+            </div>*@
+        }
+    </div>
+
+    <div class="modal fade" id="kullaniciEngelle" tabindex="-1" role="dialog" aria-labelledby="kullaniciEngelle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Engellemek istediğinize emin misiniz?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Engeli daha sonra kaldırabilirsiniz.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                    <button id="kullaniciEngelleBtn" type="button" class="btn btn-danger">Engelle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="kullaniciEngelKaldir" tabindex="-1" role="dialog" aria-labelledby="kullaniciEngelKaldir" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Engeli kaldırma istediğinize emin misiniz?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Engeli kaldırdığınızda kullanıcı sizinle iletişime geçebilir
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                    <button id="kullaniciEngeliKaldirBtn" type="button" class="btn btn-danger">Engeli Kaldır</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@if (Session["userID"] != null)
+{
+    <script type="text/javascript">
+        $('#yorumYapButon').click(function () {
+            // Call AJAX here
+            $.ajax({
+                method: "POST",
+                url: "/Home/yorumYap", // Your URL here
+                data: {
+                    'yorumYapilan': @ViewBag.User.userID,
+                    'yorumYapan':  @Session["userID"],
+                    'yorumMetni': $("#yorum").val(),
+                    'puan': $("#puanDropDown").val()
+                },
+                success: function() {
+                    location.reload();
+                }// Your data here
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $('#kullaniciEngeliKaldirBtn').click(function () {
+            // Call AJAX here
+            $.ajax({
+                method: "POST",
+                url: "/Home/kullaniciEngelle", // Your URL here
+                data: {
+                    'engelleyen':  @Session["userID"],
+                    'engellenen': @ViewBag.User.userID,
+                },
+                success: function() {
+                    location.reload();
+                }// Your data here
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $('#kullaniciEngelleBtn').click(function () {
+            // Call AJAX here
+            $.ajax({
+                method: "POST",
+                url: "/Home/kullaniciEngelle", // Your URL here
+                data: {
+                    'engelleyen':  @Session["userID"],
+                    'engellenen': @ViewBag.User.userID,
+                },
+                success: function() {
+                    location.reload();
+                }// Your data here
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $('#mesajAtButon').click(function () {
+            // Call AJAX here
+            $.ajax({
+                method: "POST",
+                url: "/Home/mesajAt", // Your URL here
+                data: {
+                    'mesajAtan': "@Session["userID"]",
+                    'mesajAtilan':  "@ViewBag.User.userID",
+                    'mesaj': $("#mesajMetni").val(),
+                },
+                success: function() {
+                    alert("Mesaj Başarıyla.");
+                    location.reload();
+                }// Your data here
+            });
+        });
+    </script>
+}
+    <script type="text/javascript">
+        $('#girisYapButon').click(function () {
+            // Call AJAX here
+            $.ajax({
+                method: "POST",
+                url: "/Home/girisYap", // Your URL here
+                data: {
+                    'eposta': $("#eposta").val(),
+                    'parola': $("#password").val(),
+                    'hizmetVerenID': @ViewBag.User.userID,
+                },
+                success: function() {
+                    location.reload();
+                },// Your data here
+                error: function (xhr, httpStatusMessage, customErrorMessage) {
+                    if (xhr.status === 410) {
+                        alert(customErrorMessage);}
+                    else if(xhr.status === 200){
+                        location.reload();
+                    }}
+            });
+        });
+    </script>
+
+
