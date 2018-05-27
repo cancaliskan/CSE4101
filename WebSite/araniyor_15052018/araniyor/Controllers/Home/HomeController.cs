@@ -796,59 +796,64 @@ namespace araniyor.Controllers.Home
         {
             var tempUser = db.Users.Where(x => x.username == username).FirstOrDefault();
             var tempUser2 = db.Users.Where(x => x.eMail == eposta).FirstOrDefault();
-
-            if (tempUser != null || tempUser2 != null)
+            if ((businessCategoryID != 0 && businessSubategoryID != 0 && city != "" && district != ""))
             {
-                var user = db.Users.Find(userID);
-
-                user.businessCategoryID = businessCategoryID;
-                user.businessSubategoryID = businessSubategoryID;
-                user.city = city;
-                user.district = district;
-                user.birthday = birthday;
-                user.phone = phone;
-                user.description = description;
-                user.gender = gender;
-                user.experience = experience;
-                user.eMail = eposta;
-                if (parola != null && parolaTekrar != null)
-                {
-                    if (parola == parolaTekrar)
-                        user.password = parola;
-                    else
-                        return new HttpStatusCodeResult(410, "Parola Eşleşmiyor..");
-                }
-                else
-                    user.password = user.password;
-                user.username = username;
-                user.name = name;
-                user.surname = surname;
-
-                db.Entry(user).State = EntityState.Modified;
-                try
-                {
-                    db.SaveChanges();
-                    return new HttpStatusCodeResult(200, "Islem Basarili..");
-                }
-                catch (DbEntityValidationException e)
+                if (tempUser != null || tempUser2 != null)
                 {
 
-                    foreach (var eve in e.EntityValidationErrors)
+                    var user = db.Users.Find(userID);
+
+                    user.businessCategoryID = businessCategoryID;
+                    user.businessSubategoryID = businessSubategoryID;
+                    user.city = city;
+                    user.district = district;
+                    user.birthday = birthday;
+                    user.phone = phone;
+                    user.description = description;
+                    user.gender = gender;
+                    user.experience = experience;
+                    user.eMail = eposta;
+                    if (parola != null && parolaTekrar != null)
                     {
-                        Response.Write(string.Format("Entity türü \"{0}\" şu hatalara sahip \"{1}\" Geçerlilik hataları:", eve.Entry.Entity.GetType().Name, eve.Entry.State));
-                        foreach (var ve in eve.ValidationErrors)
+                        if (parola == parolaTekrar)
+                            user.password = parola;
+                        else
+                            return new HttpStatusCodeResult(410, "Parola Eşleşmiyor..");
+                    }
+                    else
+                        user.password = user.password;
+                    user.username = username;
+                    user.name = name;
+                    user.surname = surname;
+
+                    db.Entry(user).State = EntityState.Modified;
+                    try
+                    {
+                        db.SaveChanges();
+                        return new HttpStatusCodeResult(200, "Islem Basarili..");
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+
+                        foreach (var eve in e.EntityValidationErrors)
                         {
-                            Response.Write(string.Format("- Özellik: \"{0}\", Hata: \"{1}\"", ve.PropertyName, ve.ErrorMessage));
+                            Response.Write(string.Format("Entity türü \"{0}\" şu hatalara sahip \"{1}\" Geçerlilik hataları:", eve.Entry.Entity.GetType().Name, eve.Entry.State));
+                            foreach (var ve in eve.ValidationErrors)
+                            {
+                                Response.Write(string.Format("- Özellik: \"{0}\", Hata: \"{1}\"", ve.PropertyName, ve.ErrorMessage));
+                            }
+                            Response.End();
+                            return new HttpStatusCodeResult(410, "Islem Basarisiz. Lutfen tekrar deneyin.!");
                         }
-                        Response.End();
-                        return new HttpStatusCodeResult(410, "Islem Basarisiz. Lutfen tekrar deneyin.!");
                     }
                 }
+                else
+                    return new HttpStatusCodeResult(410, "E-Posta veya Kullanıcı adı sistemde bulunmakta.!");
             }
             else
-                return new HttpStatusCodeResult(410, "E-Posta veya Kullanıcı adı sistemde bulunmakta.!");
+                return new HttpStatusCodeResult(410, "Lütfen tüm alanları doldurun.!");
 
-            return View();
+            return RedirectToAction("profilDüzenle", "Home");
         }
 
 

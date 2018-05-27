@@ -19,7 +19,16 @@
                         <a href="/Home/KullaniciDetayi/@user.userID"> @user.name @user.surname</a>
                     </h4>
                     <p class="card-text">
-                        @user.description
+                        @{
+                            if (user.description.Length > 20)
+                            {
+                            <p>@user.description.Substring(0, 20)...</p>
+                            }
+                            else
+                            {
+                                <p>@user.description</p>
+                            }
+                        }
                     </p>
                 </div>
                 <div class="card-footer">

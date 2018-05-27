@@ -133,12 +133,15 @@
                         {
                             foreach (var item2 in ViewBag.ilceListe)
                             {
-                                if (Convert.ToInt32(item) == item2.ID)
+                                if (item != "" && item2.ID != null)
                                 {
+                                    if (Convert.ToInt32(item) == item2.ID)
+                                    {
                                     <div class="custom-control custom-checkbox">
                                         <input type="checkbox" class="custom-control-input" name="ilce" id="ilce @item2.ID" value=@item2.ID />
                                         <label class="custom-control-label" for="ilce @item2.ID">@item2.City1</label>
                                     </div>
+                                    }
                                 }
                             }
                         }

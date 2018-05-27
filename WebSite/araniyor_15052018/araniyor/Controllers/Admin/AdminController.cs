@@ -711,6 +711,7 @@ namespace araniyor.Controllers.Admin
                         user.surname = surname;
                         user.active = active;
                         user.admin = admin;
+                        user.steward = false;
 
                         db.Entry(user).State = EntityState.Modified;
                         db.SaveChanges();

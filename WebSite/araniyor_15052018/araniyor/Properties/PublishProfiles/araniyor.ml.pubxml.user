@@ -16,7 +16,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/19/2018 17:00:50</publishTime>
     </File>
     <File Include="bin/araniyor.dll">
-      <publishTime>05/15/2018 13:32:12</publishTime>
+      <publishTime>05/24/2018 10:21:06</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>03/02/2015 08:32:26</publishTime>
@@ -1066,10 +1066,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/06/2018 18:19:35</publishTime>
     </File>
     <File Include="Views/Home/KullaniciDetayi.cshtml">
-      <publishTime>05/13/2018 17:30:46</publishTime>
+      <publishTime>05/24/2018 09:41:54</publishTime>
     </File>
     <File Include="Views/Home/ListUser.cshtml">
-      <publishTime>05/13/2018 01:32:28</publishTime>
+      <publishTime>05/24/2018 09:36:48</publishTime>
     </File>
     <File Include="Views/Home/Mesajlasma.cshtml">
       <publishTime>05/15/2018 13:16:46</publishTime>
@@ -1081,13 +1081,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/11/2018 14:23:43</publishTime>
     </File>
     <File Include="Views/Home/profilDüzenle.cshtml">
-      <publishTime>05/15/2018 13:20:08</publishTime>
+      <publishTime>05/24/2018 10:11:34</publishTime>
     </File>
     <File Include="Views/Home/Vizyon.cshtml">
       <publishTime>04/05/2018 22:46:30</publishTime>
     </File>
     <File Include="Views/Home/_UserList.cshtml">
-      <publishTime>05/06/2018 19:25:31</publishTime>
+      <publishTime>05/24/2018 09:58:35</publishTime>
     </File>
     <File Include="Views/Shared/_LayoutAdminPanel.cshtml">
       <publishTime>04/03/2018 15:28:48</publishTime>
@@ -1105,7 +1105,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/19/2018 16:58:08</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>05/15/2018 13:32:19</publishTime>
+      <publishTime>05/24/2018 10:21:15</publishTime>
     </File>
   </ItemGroup>
 </Project>
